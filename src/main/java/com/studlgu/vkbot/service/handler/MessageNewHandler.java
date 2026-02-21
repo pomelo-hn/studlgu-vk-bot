@@ -20,7 +20,12 @@ public class MessageNewHandler implements ICallbackHandler {
         VkApiClient vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
         UserActor userActor = new UserActor(request.getObject().getMessage().getFromId(), accessToken);
         try {
-            vkApiClient.messages().sendUserIds(userActor).message("hi test").execute();
+            vkApiClient
+                    .messages()
+                    .sendUserIds(userActor)
+                    .message("hi test")
+                    .randomId(0)
+                    .execute();
         } catch (ApiException | ClientException e) {
             throw new RuntimeException(e);
         }
