@@ -9,6 +9,8 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 public class MessageNewHandler implements ICallbackHandler {
 
@@ -25,7 +27,7 @@ public class MessageNewHandler implements ICallbackHandler {
                     .sendUserIds(userActor)
                     .message("hi test")
                     .userId(userActor.getId())
-                    .randomId(0)
+                    .randomId(new Random().nextInt())
                     .execute();
         } catch (ApiException | ClientException e) {
             throw new RuntimeException(e);
