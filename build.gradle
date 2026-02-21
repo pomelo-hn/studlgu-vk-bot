@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.vk.api:sdk:1.0.16")
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
