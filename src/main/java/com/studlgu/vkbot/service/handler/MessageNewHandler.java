@@ -24,6 +24,7 @@ public class MessageNewHandler implements ICallbackHandler {
                     .messages()
                     .sendUserIds(userActor)
                     .message("hi test")
+                    .userId(userActor.getId())
                     .randomId(0)
                     .execute();
         } catch (ApiException | ClientException e) {
