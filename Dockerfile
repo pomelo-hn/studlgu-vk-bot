@@ -13,10 +13,7 @@ RUN groupadd --gid 1001 app && \
     useradd --uid 1001 --gid 1001 -m -d /app app
 
 COPY --from=build --chown=app:app /app/build/libs/*.jar /app/app.jar
-
 USER app
 
 EXPOSE 8080
-EXPOSE 5005
-
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
