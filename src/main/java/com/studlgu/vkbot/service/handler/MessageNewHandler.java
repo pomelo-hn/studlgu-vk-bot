@@ -30,8 +30,8 @@ public class MessageNewHandler implements ICallbackHandler {
             LOG.info("Random id {}", randomId);
             vkApiClient
                     .messages()
-                    .sendUserIds(userActor)
-                    .message("hi test")
+                    .sendDeprecated(userActor)
+                    .message("" + randomId)
                     .userId(userActor.getId())
                     .randomId(randomId)
                     .execute();
