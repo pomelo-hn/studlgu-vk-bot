@@ -26,7 +26,7 @@ public class MessageNewHandler implements ICallbackHandler {
         VkApiClient vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
         UserActor userActor = new UserActor(request.getObject().getMessage().getFromId(), accessToken);
         try {
-            int randomId = new Random().nextInt();
+            int randomId = Math.abs(new Random().nextInt(10000));
             LOG.info("Random id {}", randomId);
             vkApiClient
                     .messages()
