@@ -60,7 +60,7 @@ public class MotivationButtonHandler implements ButtonHandler {
                                 new KeyboardButtonActionCallback()
                                         .setLabel("✨Мотивашки")
                                         .setPayload("{\"button_type\": \"motivation_btn\"}")
-                                        .setType(KeyboardButtonActionCallbackType.CALLBACK)));
+                                        .setType(KeyboardButtonActionCallbackType.CALLBACK))); //TODO: перейти на тип TEXT
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()
