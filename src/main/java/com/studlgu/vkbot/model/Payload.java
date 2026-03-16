@@ -8,8 +8,6 @@ import tools.jackson.databind.annotation.JsonNaming;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CallbackObject {
-    private CallbackMessage message;
-    private Payload payload;
-    private Long userId;
+public class Payload {
+    private String buttonType;
 }

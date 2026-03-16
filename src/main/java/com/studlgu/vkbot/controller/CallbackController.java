@@ -1,7 +1,7 @@
 package com.studlgu.vkbot.controller;
 
-import com.studlgu.vkbot.model.ConfirmationServerRequest;
-import com.studlgu.vkbot.service.CallbackService;
+import com.studlgu.vkbot.model.CallbackRequest;
+import com.studlgu.vkbot.service.handler.callback.CallbackService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,7 @@ public class CallbackController {
     private final CallbackService service;
 
     @PostMapping
-    public String callback(@RequestBody ConfirmationServerRequest request) {
+    public String callback(@RequestBody CallbackRequest request) {
         return service.handle(request);
     }
 }

@@ -1,8 +1,6 @@
-package com.studlgu.vkbot.service;
+package com.studlgu.vkbot.service.handler.callback;
 
-import com.studlgu.vkbot.model.ConfirmationServerRequest;
-import com.studlgu.vkbot.service.handler.CallbackType;
-import com.studlgu.vkbot.service.handler.ICallbackHandler;
+import com.studlgu.vkbot.model.CallbackRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,10 @@ public class CallbackService {
 
     private final ApplicationContext applicationContext;
 
-    public String handle(ConfirmationServerRequest request) {
+    public String handle(CallbackRequest request) {
         Optional<CallbackType> callbackType = CallbackType.findByType(request.getType());
         if (callbackType.isPresent()) {
+
             ICallbackHandler handler = applicationContext.getBean(callbackType.get().getHandlerName(), ICallbackHandler.class);
             return handler.handle(request);
         }

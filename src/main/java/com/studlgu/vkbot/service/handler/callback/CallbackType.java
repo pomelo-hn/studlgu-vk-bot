@@ -1,4 +1,4 @@
-package com.studlgu.vkbot.service.handler;
+package com.studlgu.vkbot.service.handler.callback;
 
 import lombok.Getter;
 
@@ -7,8 +7,11 @@ import java.util.Optional;
 
 @Getter
 public enum CallbackType {
+
     CONFIRMATION("confirmation", "confirmationHandler"),
-    MESSAGE_NEW("message_new", "messageNewHandler");
+    MESSAGE_NEW("message_new", "messageNewHandler"),
+    MESSAGE_EVENT("message_event", "messageEventHandler"),
+    MESSAGE_REPLY("message_reply", "messageReplyHandler");
 
     private final String callbackType;
     private final String handlerName;

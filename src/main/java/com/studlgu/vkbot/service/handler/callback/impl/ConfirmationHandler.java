@@ -1,6 +1,7 @@
-package com.studlgu.vkbot.service.handler;
+package com.studlgu.vkbot.service.handler.callback.impl;
 
-import com.studlgu.vkbot.model.ConfirmationServerRequest;
+import com.studlgu.vkbot.model.CallbackRequest;
+import com.studlgu.vkbot.service.handler.callback.ICallbackHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class ConfirmationHandler implements ICallbackHandler {
     private String confirmationCode;
 
     @Override
-    public String handle(ConfirmationServerRequest request) {
+    public String handle(CallbackRequest request) {
         if (request.getGroupId().equals(Long.valueOf(groupId))) {
             return confirmationCode;
         }

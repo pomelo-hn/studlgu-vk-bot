@@ -8,7 +8,7 @@ import tools.jackson.databind.annotation.JsonNaming;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ConfirmationServerRequest {
+public class CallbackRequest {
     private Long groupId;
     private String type;
     private CallbackObject object;
