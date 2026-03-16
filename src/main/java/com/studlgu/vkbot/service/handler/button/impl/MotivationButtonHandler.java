@@ -59,12 +59,12 @@ public class MotivationButtonHandler implements ButtonHandler {
                         .setAction(
                                 new KeyboardButtonActionCallback()
                                         .setLabel("✨Мотивашки")
-                                        .setPayload("{\"buttonType\": \"motivation_btn\"}")
+                                        .setPayload("{\"button_type\": \"motivation_btn\"}")
                                         .setType(KeyboardButtonActionCallbackType.CALLBACK)));
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()
                 .setButtons(keyboardButtonList)
-                .setInline(true);
+                .setInline(false);
     }
 }

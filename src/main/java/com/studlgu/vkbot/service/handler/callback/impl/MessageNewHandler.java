@@ -75,6 +75,6 @@ public class MessageNewHandler implements ICallbackHandler {
 
         return new Keyboard()
                 .setButtons(keyboardButtonList)
-                .setInline(true);
+                .setInline(false);
     }
 }
