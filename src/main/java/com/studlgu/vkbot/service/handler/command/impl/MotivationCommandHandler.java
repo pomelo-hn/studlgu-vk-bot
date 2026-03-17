@@ -33,7 +33,7 @@ public class MotivationCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CallbackRequest request) { //TODO: запросить список мотивашек
-        UserActor userActor = actorFactory.create(request.getObject().getUserId());
+        UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
 
         try {
             int randomId = Math.abs(new Random().nextInt(10000));
