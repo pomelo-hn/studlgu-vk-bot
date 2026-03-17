@@ -35,7 +35,7 @@ public class StartCommandHandler implements CommandHandler {
             vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message("Выберите действие: " + randomId)
+                    .message("Выберите действие: ")
                     .keyboard(StandardKeyboard.createkeyboard())
                     .userId(userActor.getId())
                     .randomId(randomId)

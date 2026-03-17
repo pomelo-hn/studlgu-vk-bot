@@ -35,7 +35,7 @@ public class MotivationCommandHandler implements CommandHandler {
             vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message("Ваша мотивашка" + randomId)
+                    .message("Ваша мотивашка")
                     .keyboard(StandardKeyboard.createkeyboard())
                     .userId(userActor.getId())
                     .randomId(randomId)

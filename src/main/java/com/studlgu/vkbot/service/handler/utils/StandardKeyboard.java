@@ -18,7 +18,7 @@ public class StandardKeyboard {
                 new KeyboardButton()
                         .setAction(
                                 new KeyboardButtonActionText()
-                                        .setLabel("✨Мотивашки")
+                                        .setLabel("✨ Мотивашки")
                                         .setPayload("{\"command\": \"motivation\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
 
@@ -26,8 +26,16 @@ public class StandardKeyboard {
                 new KeyboardButton()
                         .setAction(
                                 new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDD14Расписание звонков")
+                                        .setLabel("\uD83D\uDD14 Расписание звонков")
                                         .setPayload("{\"command\": \"bell_schedule\"}")
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
+
+        keyboardButton.add(
+                new KeyboardButton()
+                        .setAction(
+                                new KeyboardButtonActionText()
+                                        .setLabel("\uD83D\uDCC5 Какая неделя?")
+                                        .setPayload("{\"command\": \"which_week\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
         keyboardButtonList.add(keyboardButton);
 
