@@ -10,8 +10,8 @@ import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Keyboard;
 import com.vk.api.sdk.objects.messages.KeyboardButton;
-import com.vk.api.sdk.objects.messages.KeyboardButtonActionCallback;
-import com.vk.api.sdk.objects.messages.KeyboardButtonActionCallbackType;
+import com.vk.api.sdk.objects.messages.KeyboardButtonActionText;
+import com.vk.api.sdk.objects.messages.KeyboardButtonActionTextType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -57,10 +57,10 @@ public class MotivationButtonHandler implements ButtonHandler {
         keyboardButton.add(
                 new KeyboardButton()
                         .setAction(
-                                new KeyboardButtonActionCallback()
+                                new KeyboardButtonActionText()
                                         .setLabel("✨Мотивашки")
                                         .setPayload("{\"button_type\": \"motivation_btn\"}")
-                                        .setType(KeyboardButtonActionCallbackType.CALLBACK))); //TODO: перейти на тип TEXT
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()

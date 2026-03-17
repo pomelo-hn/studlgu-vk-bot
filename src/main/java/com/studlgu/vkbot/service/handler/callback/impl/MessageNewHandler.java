@@ -67,10 +67,10 @@ public class MessageNewHandler implements ICallbackHandler {
         keyboardButton.add(
                 new KeyboardButton()
                         .setAction(
-                                new KeyboardButtonActionCallback()
+                                new KeyboardButtonActionText()
                                         .setLabel("✨Мотивашки")
                                         .setPayload("{\"button_type\": \"motivation_btn\"}")
-                                        .setType(KeyboardButtonActionCallbackType.CALLBACK)));
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()
