@@ -1,6 +1,7 @@
 package com.studlgu.vkbot.service.handler.command;
 
 public enum CommandType {
+    START,
     MOTIVATION,
-    START
+    BELL_SCHEDULE
 }
