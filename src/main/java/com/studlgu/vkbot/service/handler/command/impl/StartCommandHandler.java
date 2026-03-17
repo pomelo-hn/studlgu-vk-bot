@@ -1,18 +1,18 @@
-package com.studlgu.vkbot.service.handler.button.impl;
+package com.studlgu.vkbot.service.handler.command.impl;
 
 import com.studlgu.vkbot.model.CallbackRequest;
-import com.studlgu.vkbot.service.handler.button.ButtonHandler;
-import com.studlgu.vkbot.service.handler.button.ButtonType;
+import com.studlgu.vkbot.service.handler.command.CommandHandler;
+import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Keyboard;
 import com.vk.api.sdk.objects.messages.KeyboardButton;
 import com.vk.api.sdk.objects.messages.KeyboardButtonActionText;
 import com.vk.api.sdk.objects.messages.KeyboardButtonActionTextType;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,27 +20,27 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-public class MotivationButtonHandler implements ButtonHandler {
+@RequiredArgsConstructor
+public class StartCommandHandler implements CommandHandler {
 
-    @Value("${vkbot.access-token}")
-    private String accessToken;
+    private final VkApiClient vkApiClient;
+    private final VkActorFactory actorFactory;
 
     @Override
-    public ButtonType getType() {
-        return ButtonType.MOTIVATION_BTN;
+    public CommandType getType() {
+        return CommandType.START;
     }
 
     @Override
-    public void handle(CallbackRequest request) { //TODO: запросить список мотивашек
-        VkApiClient vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
-        UserActor userActor = new UserActor(request.getObject().getUserId(), accessToken);
+    public void handle(CallbackRequest request) {
+        UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
 
         try {
             int randomId = Math.abs(new Random().nextInt(10000));
             vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message("Ваша мотивашка" + randomId)
+                    .message("Выберите действие: " + randomId)
                     .keyboard(createkeyboard())
                     .userId(userActor.getId())
                     .randomId(randomId)
@@ -59,7 +59,7 @@ public class MotivationButtonHandler implements ButtonHandler {
                         .setAction(
                                 new KeyboardButtonActionText()
                                         .setLabel("✨Мотивашки")
-                                        .setPayload("{\"button_type\": \"motivation_btn\"}")
+                                        .setPayload("{\"command\": \"motivation\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
         keyboardButtonList.add(keyboardButton);
 

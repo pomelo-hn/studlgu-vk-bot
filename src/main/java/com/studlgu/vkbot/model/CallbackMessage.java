@@ -10,6 +10,7 @@ import tools.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CallbackMessage {
     private Long fromId;
+    private Payload mappedPayload;
     private String payload;
     private String text;
 }

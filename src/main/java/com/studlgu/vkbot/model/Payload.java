@@ -9,5 +9,5 @@ import tools.jackson.databind.annotation.JsonNaming;
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Payload {
-    private String buttonType;
+    private String command;
 }
