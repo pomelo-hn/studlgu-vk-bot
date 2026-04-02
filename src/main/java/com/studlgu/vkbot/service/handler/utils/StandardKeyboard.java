@@ -10,6 +10,8 @@ import java.util.List;
 
 public class StandardKeyboard {
 
+    private StandardKeyboard() {}
+
     public static Keyboard createkeyboard() {
         List<List<KeyboardButton>> keyboardButtonList = new ArrayList<>();
 
@@ -37,6 +39,15 @@ public class StandardKeyboard {
                                         .setLabel("\uD83D\uDCC5 Какая неделя?")
                                         .setPayload("{\"command\": \"which_week\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
+
+        keyboardButton.add(
+                new KeyboardButton()
+                        .setAction(
+                                new KeyboardButtonActionText()
+                                        .setLabel("\uD83C\uDF7D Получить меню")
+                                        .setPayload("{\"command\": \"get_menu\"}")
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
+
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()
