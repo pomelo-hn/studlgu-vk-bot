@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
@@ -24,6 +25,7 @@ public class WhichWeekCommandHandler implements CommandHandler {
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
+    private final RoleIdentifier roleIdentifier;
 
     @Value("${vkbot.week-start-date}")
     private LocalDate weekStartDate;
@@ -52,7 +54,7 @@ public class WhichWeekCommandHandler implements CommandHandler {
                     .sendDeprecated(userActor)
                     .message("Сегодня: " + date + "\n" +
                             "Сейчас " + weekType + " неделя")
-                    .keyboard(StandardKeyboard.createkeyboard())
+                    .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                     .userId(userActor.getId())
                     .randomId(randomId)
                     .execute();

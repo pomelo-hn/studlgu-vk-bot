@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
@@ -15,7 +16,10 @@ import com.vk.api.sdk.objects.photos.responses.SaveMessagesPhotoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Random;
 
@@ -25,6 +29,7 @@ public class GetMenuCommandHandler implements CommandHandler {
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
+    private final RoleIdentifier roleIdentifier;
 
     @Override
     public CommandType getType() {
@@ -38,7 +43,8 @@ public class GetMenuCommandHandler implements CommandHandler {
         try {
             GetMessagesUploadServerResponse messagesUploadServer = vkApiClient.photos().getMessagesUploadServer(userActor).execute();
 
-            File file = new File("D:\\java\\vk-bot\\src\\main\\resources\\photo_2026-03-13_09-17-06.jpg");
+            ClassPathResource resource = new ClassPathResource("photo_2026-03-13_09-17-06.jpg");
+            File file = resource.getFile();
 
             PhotoUploadResponse photoUploadResponse = vkApiClient.upload()
                     .photo(messagesUploadServer.getUploadUrl().toURL().toString(), file).execute();
@@ -49,7 +55,7 @@ public class GetMenuCommandHandler implements CommandHandler {
                     .hash(photoUploadResponse.getHash())
                     .execute().getFirst();
 
-            String photo = "{photo}" + "{-" + saveMessagesPhotoResponse.getOwnerId() + "}_{" + saveMessagesPhotoResponse.getId() + "}";
+            String photo = "photo" + saveMessagesPhotoResponse.getOwnerId() + "_" + saveMessagesPhotoResponse.getId();
 
             int randomId = Math.abs(new Random().nextInt(10000));
             vkApiClient
@@ -57,7 +63,7 @@ public class GetMenuCommandHandler implements CommandHandler {
                     .sendDeprecated(userActor)
                     .message("\uD83C\uDF5B Меню столовой на 2026-03-13")
                     .attachment(photo)
-                    .keyboard(StandardKeyboard.createkeyboard())
+                    .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                     .userId(userActor.getId())
                     .randomId(randomId)
                     .execute();
@@ -65,6 +71,8 @@ public class GetMenuCommandHandler implements CommandHandler {
             throw new RuntimeException(e);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
+        } catch (IOException e) {
+	        throw new RuntimeException(e);
         }
     }
 }

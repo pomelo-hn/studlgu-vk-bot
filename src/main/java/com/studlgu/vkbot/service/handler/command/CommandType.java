@@ -5,5 +5,6 @@ public enum CommandType {
     MOTIVATION,
     BELL_SCHEDULE,
     WHICH_WEEK,
-    GET_MENU
+    GET_MENU,
+    UPLOAD_MENU
 }

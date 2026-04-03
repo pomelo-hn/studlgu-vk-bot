@@ -5,15 +5,10 @@ import lombok.Setter;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
 
-import java.util.List;
-
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CallbackMessage {
-    private Long fromId;
-    private Payload mappedPayload;
-    private String payload;
-    private String text;
-    private List<CallbackAttachment> attachments;
+public class CallbackAttachment {
+	CallbackPhoto photo;
+
 }

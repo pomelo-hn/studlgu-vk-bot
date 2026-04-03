@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
@@ -22,6 +23,7 @@ public class BellScheduleCommandHandler implements CommandHandler {
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
+    private final RoleIdentifier roleIdentifier;
 
     @Override
     public CommandType getType() {
@@ -59,7 +61,7 @@ public class BellScheduleCommandHandler implements CommandHandler {
                             "\n" +
                             "Текущая дата: " + date + "\n" +
                             "Время:" + time)
-                    .keyboard(StandardKeyboard.createkeyboard())
+                    .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                     .userId(userActor.getId())
                     .randomId(randomId)
                     .execute();
