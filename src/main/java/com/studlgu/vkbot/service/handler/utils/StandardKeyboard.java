@@ -12,7 +12,11 @@ public class StandardKeyboard {
 
     private StandardKeyboard() {}
 
-    public static Keyboard createkeyboard(Boolean identify) {
+    public static Keyboard createkeyboard() {
+        return createkeyboard(false);
+    }
+
+    public static Keyboard createkeyboard(Boolean isUserHasEditorRights) {
         List<List<KeyboardButton>> keyboardButtonList = new ArrayList<>();
 
         List<KeyboardButton> keyboardButton = new ArrayList<>();
@@ -48,10 +52,26 @@ public class StandardKeyboard {
                                         .setPayload("{\"command\": \"get_menu\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
 
+        addEditorButtons(keyboardButton, isUserHasEditorRights);
+
         keyboardButtonList.add(keyboardButton);
 
         return new Keyboard()
                 .setButtons(keyboardButtonList)
                 .setInline(false);
     }
+
+	private static void addEditorButtons(List<KeyboardButton> keyboardButton, Boolean isUserHasEditorRights) {
+        if (Boolean.FALSE.equals(isUserHasEditorRights)) {
+            return;
+        }
+
+        keyboardButton.add(
+                new KeyboardButton()
+                        .setAction(
+                                new KeyboardButtonActionText()
+                                        .setLabel("\uD83D\uDCE5 Загрузить меню")
+                                        .setPayload("{\"command\": \"upload_menu\"}")
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
+	}
 }

@@ -11,19 +11,20 @@ public enum CallbackType {
     CONFIRMATION("confirmation", "confirmationHandler"),
     MESSAGE_NEW("message_new", "messageNewHandler"),
     MESSAGE_EVENT("message_event", "messageEventHandler"),
-    MESSAGE_REPLY("message_reply", "messageReplyHandler");
+    MESSAGE_REPLY("message_reply", "messageReplyHandler"),
+    UPLOAD_PHOTO("upload_photo", "uploadPhotoHandler");
 
-    private final String callbackType;
+    private final String callbackName;
     private final String handlerName;
 
-    CallbackType(String callbackType, String handlerName) {
-        this.callbackType = callbackType;
+    CallbackType(String callbackName, String handlerName) {
+        this.callbackName = callbackName;
         this.handlerName = handlerName;
     }
 
-    public static Optional<CallbackType> findByType(String callbackType) {
+    public static Optional<CallbackType> findByType(String callbackName) {
         return Arrays.stream(values())
-                .filter(type -> type.callbackType.equals(callbackType))
+                .filter(type -> type.callbackName.equals(callbackName))
                 .findFirst();
     }
 }

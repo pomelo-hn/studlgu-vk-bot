@@ -5,6 +5,7 @@ import com.studlgu.vkbot.model.CallbackObject;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.model.Payload;
 import com.studlgu.vkbot.service.handler.callback.CallbackService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +16,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/callback")
+@RequiredArgsConstructor
 public class CallbackController {
-
-    public CallbackController(CallbackService service) {
-        this.service = service;
-        System.setProperty("api.host", "api.vk.ru"); //TODO: переезд в конифгурацию
-        System.setProperty("oauth.host", "oauth.vk.ru");
-    }
 
     private final CallbackService service;
 

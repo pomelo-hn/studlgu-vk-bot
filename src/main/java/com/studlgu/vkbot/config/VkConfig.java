@@ -10,6 +10,8 @@ public class VkConfig {
 
     @Bean
     public VkApiClient vkApiClient() {
+        System.setProperty("api.host", "api.vk.ru");
+        System.setProperty("oauth.host", "oauth.vk.ru");
         return new VkApiClient(HttpTransportClient.getInstance());
     }
 }

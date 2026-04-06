@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.PhotoStorage;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
@@ -16,11 +17,12 @@ import com.vk.api.sdk.objects.photos.responses.SaveMessagesPhotoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import org.springframework.core.io.ClassPathResource;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 @Component
@@ -30,6 +32,7 @@ public class GetMenuCommandHandler implements CommandHandler {
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
     private final RoleIdentifier roleIdentifier;
+    private final PhotoStorage photoStorage;
 
     @Override
     public CommandType getType() {
@@ -41,28 +44,20 @@ public class GetMenuCommandHandler implements CommandHandler {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
 
         try {
-            GetMessagesUploadServerResponse messagesUploadServer = vkApiClient.photos().getMessagesUploadServer(userActor).execute();
+            LocalDateTime dateTime = LocalDateTime.now();
 
-            ClassPathResource resource = new ClassPathResource("photo_2026-03-13_09-17-06.jpg");
-            File file = resource.getFile();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+            String date = dateTime.format(dateFormatter);
 
-            PhotoUploadResponse photoUploadResponse = vkApiClient.upload()
-                    .photo(messagesUploadServer.getUploadUrl().toURL().toString(), file).execute();
-
-            SaveMessagesPhotoResponse saveMessagesPhotoResponse = vkApiClient.photos().saveMessagesPhoto(userActor)
-                    .photo(photoUploadResponse.getPhoto())
-                    .server(photoUploadResponse.getServer())
-                    .hash(photoUploadResponse.getHash())
-                    .execute().getFirst();
-
-            String photo = "photo" + saveMessagesPhotoResponse.getOwnerId() + "_" + saveMessagesPhotoResponse.getId();
+            GetMessagesUploadServerResponse messagesUploadServer = vkApiClient
+                    .photos().getMessagesUploadServer(userActor).execute();
 
             int randomId = Math.abs(new Random().nextInt(10000));
             vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message("\uD83C\uDF5B Меню столовой на 2026-03-13")
-                    .attachment(photo)
+                    .message("\uD83C\uDF5B Меню столовой на " + date)
+                    .attachment(getMenu(messagesUploadServer, userActor))
                     .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                     .userId(userActor.getId())
                     .randomId(randomId)
@@ -75,4 +70,30 @@ public class GetMenuCommandHandler implements CommandHandler {
 	        throw new RuntimeException(e);
         }
     }
+
+    private String getMenu(GetMessagesUploadServerResponse messagesUploadServer, UserActor userActor) throws ApiException, ClientException, MalformedURLException {
+	    try {
+            List<File> menuPhotos = photoStorage.getAllPhotos();
+            String attachments = "";
+
+            for (File photo : menuPhotos) {
+                PhotoUploadResponse photoUploadResponse = vkApiClient.upload()
+                        .photo(messagesUploadServer.getUploadUrl().toURL().toString(), photo).execute();
+
+                SaveMessagesPhotoResponse saveMessagesPhotoResponse = vkApiClient.photos().saveMessagesPhoto(userActor)
+                        .photo(photoUploadResponse.getPhoto())
+                        .server(photoUploadResponse.getServer())
+                        .hash(photoUploadResponse.getHash())
+                        .execute().getFirst();
+
+                attachments = attachments.concat(
+                        "photo" + saveMessagesPhotoResponse.getOwnerId() + "_" + saveMessagesPhotoResponse.getId() + ",");
+            }
+
+            return attachments.substring(0, attachments.length() - 1);
+	    } catch (IOException e) {
+		    throw new RuntimeException(e);
+	    }
+    }
+
 }

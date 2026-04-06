@@ -10,5 +10,5 @@ import tools.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CallbackAttachment {
 	CallbackPhoto photo;
-
+	String type;
 }
