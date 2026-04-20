@@ -16,88 +16,48 @@ public class StandardKeyboard {
         return createkeyboard(false);
     }
 
-    public static Keyboard createkeyboard(Boolean isUserHasEditorRights) { //TODO: докинуть разные уровни, чтобы было не в одну строчку
-        List<List<KeyboardButton>> keyboardButtonList = new ArrayList<>();
+    public static Keyboard createkeyboard(Boolean isUserHasEditorRights) {
+        List<List<KeyboardButton>> rows = new ArrayList<>();
 
-        List<KeyboardButton> keyboardButton = new ArrayList<>();
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("✨ Мотивашки")
-                                        .setPayload("{\"command\": \"motivation\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
+        // Строка 1: Мотивашки, Расписание звонков
+        rows.add(List.of(
+                btn("✨ Мотивашки", "motivation"),
+                btn("\uD83D\uDD14 Расписание звонков", "bell_schedule")
+        ));
 
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDD14 Расписание звонков")
-                                        .setPayload("{\"command\": \"bell_schedule\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
+        // Строка 2: Какая неделя?, Получить меню
+        rows.add(List.of(
+                btn("\uD83D\uDCC5 Какая неделя?", "which_week"),
+                btn("\uD83C\uDF7D Получить меню", "get_menu")
+        ));
 
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDCC5 Какая неделя?")
-                                        .setPayload("{\"command\": \"which_week\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
+        // Строка 3: Календарь событий
+        rows.add(List.of(
+                btn("\uD83D\uDCC5 Календарь событий", "calendar")
+        ));
 
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83C\uDF7D Получить меню")
-                                        .setPayload("{\"command\": \"get_menu\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
-
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDCC5 Календарь событий")
-                                        .setPayload("{\"command\": \"calendar\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
-
-        addEditorButtons(keyboardButton, isUserHasEditorRights);
-
-        keyboardButtonList.add(keyboardButton);
-
-        return new Keyboard()
-                .setButtons(keyboardButtonList)
-                .setInline(false);
-    }
-
-	private static void addEditorButtons(List<KeyboardButton> keyboardButton, Boolean isUserHasEditorRights) {
-        if (Boolean.FALSE.equals(isUserHasEditorRights)) {
-            return;
+        if (!Boolean.FALSE.equals(isUserHasEditorRights)) {
+            // Строка 4 (редакторы): Загрузить меню
+            rows.add(List.of(
+                    btn("\uD83D\uDCE5 Загрузить меню", "upload_menu")
+            ));
+            // Строка 5 (редакторы): Добавить / Удалить событие
+            rows.add(List.of(
+                    btn("➕ Добавить событие", "add_event"),
+                    btn("\uD83D\uDDD1 Удалить событие", "delete_event")
+            ));
         }
 
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDCE5 Загрузить меню")
-                                        .setPayload("{\"command\": \"upload_menu\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
+        return new Keyboard().setButtons(rows).setInline(false);
+    }
 
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("➕ Добавить событие")
-                                        .setPayload("{\"command\": \"add_event\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
-
-        keyboardButton.add(
-                new KeyboardButton()
-                        .setAction(
-                                new KeyboardButtonActionText()
-                                        .setLabel("\uD83D\uDDD1 Удалить событие")
-                                        .setPayload("{\"command\": \"delete_event\"}")
-                                        .setType(KeyboardButtonActionTextType.TEXT)));
-	}
+    private static KeyboardButton btn(String label, String command) {
+        return new KeyboardButton().setAction(
+                new KeyboardButtonActionText()
+                        .setLabel(label)
+                        .setPayload("{\"command\": \"" + command + "\"}")
+                        .setType(KeyboardButtonActionTextType.TEXT));
+    }
 
     public static Keyboard createCalendarSubmenu() {
         List<List<KeyboardButton>> rows = new ArrayList<>();
