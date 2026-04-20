@@ -12,7 +12,9 @@ public enum CallbackType {
     MESSAGE_NEW("message_new", "messageNewHandler"),
     MESSAGE_EVENT("message_event", "messageEventHandler"),
     MESSAGE_REPLY("message_reply", "messageReplyHandler"),
-    UPLOAD_PHOTO("upload_photo", "uploadPhotoHandler");
+    UPLOAD_PHOTO("upload_photo", "uploadPhotoHandler"),
+    ADD_EVENT_INPUT("add_event_input", "addEventInputHandler"),
+    DELETE_EVENT_INPUT("delete_event_input", "deleteEventInputHandler");
 
     private final String callbackName;
     private final String handlerName;

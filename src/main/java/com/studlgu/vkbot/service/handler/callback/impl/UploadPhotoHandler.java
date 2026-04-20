@@ -5,6 +5,7 @@ import com.studlgu.vkbot.service.handler.callback.ICallbackHandler;
 import com.studlgu.vkbot.service.handler.utils.PhotoStorage;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
+import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
@@ -34,7 +35,9 @@ public class UploadPhotoHandler implements ICallbackHandler {
     public String handle(CallbackRequest request) {
 	    try {
 		    UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
-		    boolean isServerWaitingPhoto = userStateCache.isWaitingPhoto(userActor.getId());
+		    boolean isServerWaitingPhoto = userStateCache.getState(userActor.getId())
+				    .map(s -> s == UserState.AWAITING_PHOTO)
+				    .orElse(false);
 
 		    if (!isServerWaitingPhoto) {
                 sendDeclineMessage(userActor);
@@ -49,7 +52,7 @@ public class UploadPhotoHandler implements ICallbackHandler {
 
 			photoStorage.savePhotos(photoList);
 
-			userStateCache.clearWaitingPhoto(userActor.getId());
+			userStateCache.clearState(userActor.getId());
 		    sendSuccessMessage(userActor);
 
 		    return "ok";
