@@ -1,6 +1,8 @@
 package com.studlgu.vkbot.service.handler.callback;
 
 import com.studlgu.vkbot.model.CallbackAttachment;
+import com.studlgu.vkbot.model.CallbackMessage;
+import com.studlgu.vkbot.model.CallbackObject;
 import com.studlgu.vkbot.model.CallbackRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +29,10 @@ public class CallbackService {
     }
 
     public String defineType(CallbackRequest request) {
-        List<CallbackAttachment> attachments = request.getObject().getMessage().getAttachments();
+        List<CallbackAttachment> attachments = Optional.ofNullable(request.getObject())
+                .map(CallbackObject::getMessage)
+                .map(CallbackMessage::getAttachments)
+                .orElse(null);
 
         if (attachments != null && !attachments.isEmpty()) {
             boolean isAllAttachmentsIsPhoto = attachments
