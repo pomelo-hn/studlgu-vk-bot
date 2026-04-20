@@ -4,12 +4,7 @@ import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.model.Event;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
-import com.studlgu.vkbot.service.handler.utils.CalendarImageService;
-import com.studlgu.vkbot.service.handler.utils.EventService;
-import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
-import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
-import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
-import com.studlgu.vkbot.service.handler.utils.VkPhotoUploader;
+import com.studlgu.vkbot.service.handler.utils.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
@@ -54,6 +49,20 @@ public class CalendarWeekCommandHandler implements CommandHandler {
                     .userId(userActor.getId())
                     .randomId(Math.abs(new Random().nextInt(10000)))
                     .execute();
+
+            if (!events.isEmpty()) {
+                List<LocalDate> eventDates = events.stream()
+                        .map(Event::getDate)
+                        .distinct()
+                        .sorted()
+                        .toList();
+                vkApiClient.messages().sendDeprecated(userActor)
+                        .message("Выбери день для подробностей:")
+                        .keyboard(StandardKeyboard.createEventDayKeyboard(eventDates))
+                        .userId(userActor.getId())
+                        .randomId(Math.abs(new Random().nextInt(10000)))
+                        .execute();
+            }
         } catch (ApiException | ClientException | IOException e) {
             throw new RuntimeException(e);
         }

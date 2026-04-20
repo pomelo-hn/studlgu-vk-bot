@@ -58,6 +58,13 @@ public class EventService {
         return repository.deleteByIdPrefix(idPrefix);
     }
 
+    public List<Event> getEventsForDate(LocalDate date) {
+        return repository.findAll().stream()
+                .filter(e -> e.getDate().equals(date))
+                .sorted(Comparator.comparing(Event::getTime))
+                .toList();
+    }
+
     public List<Event> listAll() {
         return repository.findAll().stream()
                 .sorted(Comparator.comparing(Event::getDate).thenComparing(Event::getTime))

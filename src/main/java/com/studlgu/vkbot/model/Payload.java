@@ -11,4 +11,5 @@ import tools.jackson.databind.annotation.JsonNaming;
 public class Payload {
     private String command;
     private Integer month;
+    private String date;
 }

@@ -5,8 +5,11 @@ import com.vk.api.sdk.objects.messages.KeyboardButton;
 import com.vk.api.sdk.objects.messages.KeyboardButtonActionText;
 import com.vk.api.sdk.objects.messages.KeyboardButtonActionTextType;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class StandardKeyboard {
 
@@ -48,6 +51,28 @@ public class StandardKeyboard {
             ));
         }
 
+        return new Keyboard().setButtons(rows).setInline(false);
+    }
+
+    public static Keyboard createEventDayKeyboard(List<LocalDate> dates) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMM", Locale.of("ru"));
+        List<List<KeyboardButton>> rows = new ArrayList<>();
+        List<KeyboardButton> currentRow = new ArrayList<>();
+        for (LocalDate date : dates) {
+            String label = date.format(fmt);
+            String dateStr = date.toString();
+            currentRow.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
+                    .setLabel(label)
+                    .setPayload("{\"command\": \"event_day_detail\", \"date\": \"" + dateStr + "\"}")
+                    .setType(KeyboardButtonActionTextType.TEXT)));
+            if (currentRow.size() == 3) {
+                rows.add(new ArrayList<>(currentRow));
+                currentRow.clear();
+            }
+        }
+        if (!currentRow.isEmpty()) {
+            rows.add(currentRow);
+        }
         return new Keyboard().setButtons(rows).setInline(false);
     }
 

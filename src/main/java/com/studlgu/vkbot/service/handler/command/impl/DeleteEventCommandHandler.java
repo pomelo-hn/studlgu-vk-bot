@@ -52,7 +52,7 @@ public class DeleteEventCommandHandler implements CommandHandler {
 
             StringBuilder sb = new StringBuilder("Отправь ID события для удаления:\n\n");
             for (Event event : events) {
-                sb.append("ID: ").append(event.getId(), 0, 8).append("...\n")
+                sb.append("ID: ").append(event.getId(), 0, 8)
                   .append("  ").append(event.getTitle())
                   .append(" — ").append(event.getDate().format(DATE_FMT))
                   .append("\n\n");

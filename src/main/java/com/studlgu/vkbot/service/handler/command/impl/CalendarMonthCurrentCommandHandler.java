@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Random;
@@ -54,6 +55,20 @@ public class CalendarMonthCurrentCommandHandler implements CommandHandler {
                     .userId(userActor.getId())
                     .randomId(Math.abs(new Random().nextInt(10000)))
                     .execute();
+
+            if (!events.isEmpty()) {
+                List<LocalDate> eventDates = events.stream()
+                        .map(Event::getDate)
+                        .distinct()
+                        .sorted()
+                        .toList();
+                vkApiClient.messages().sendDeprecated(userActor)
+                        .message("Выбери день для подробностей:")
+                        .keyboard(StandardKeyboard.createEventDayKeyboard(eventDates))
+                        .userId(userActor.getId())
+                        .randomId(Math.abs(new Random().nextInt(10000)))
+                        .execute();
+            }
         } catch (ApiException | ClientException | IOException e) {
             throw new RuntimeException(e);
         }

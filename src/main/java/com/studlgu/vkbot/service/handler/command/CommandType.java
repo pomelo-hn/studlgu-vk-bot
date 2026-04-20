@@ -13,5 +13,6 @@ public enum CommandType {
     CALENDAR_MONTH_SELECT,
     CALENDAR_MONTH,
     ADD_EVENT,
-    DELETE_EVENT
+    DELETE_EVENT,
+    EVENT_DAY_DETAIL
 }

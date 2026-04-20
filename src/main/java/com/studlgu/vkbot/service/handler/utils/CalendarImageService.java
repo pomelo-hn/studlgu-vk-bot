@@ -104,9 +104,20 @@ public class CalendarImageService {
             if (dayEvents != null && !dayEvents.isEmpty()) {
                 g.setFont(new Font("SansSerif", Font.PLAIN, 10));
                 g.setColor(EVENT_TEXT_COLOR);
-                String eventTitle = truncate(dayEvents.getFirst().getTitle(), 12);
                 fm = g.getFontMetrics();
-                g.drawString(eventTitle, x + (cellW - fm.stringWidth(eventTitle)) / 2, y + 32);
+                int lineH = fm.getHeight();
+                int maxFit = (cellH - 28) / lineH;
+                int shown = Math.min(dayEvents.size(), maxFit > 0 ? maxFit : 1);
+                int textY = y + 30;
+                for (int idx = 0; idx < shown; idx++) {
+                    String label = truncate(dayEvents.get(idx).getTitle(), 12);
+                    g.drawString(label, x + (cellW - fm.stringWidth(label)) / 2, textY);
+                    textY += lineH;
+                }
+                if (dayEvents.size() > shown) {
+                    String more = "+" + (dayEvents.size() - shown);
+                    g.drawString(more, x + cellW - fm.stringWidth(more) - 2, y + cellH - 3);
+                }
             }
         }
 
