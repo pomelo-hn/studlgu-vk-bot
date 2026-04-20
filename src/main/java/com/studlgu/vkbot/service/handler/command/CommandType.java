@@ -6,5 +6,6 @@ public enum CommandType {
     BELL_SCHEDULE,
     WHICH_WEEK,
     GET_MENU,
-    UPLOAD_MENU
+    UPLOAD_MENU,
+    APPEAL
 }

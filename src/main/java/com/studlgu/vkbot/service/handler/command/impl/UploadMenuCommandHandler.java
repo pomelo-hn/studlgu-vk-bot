@@ -22,7 +22,6 @@ public class UploadMenuCommandHandler implements CommandHandler {
 
 	private final VkApiClient vkApiClient;
 	private final VkActorFactory actorFactory;
-	private final RoleIdentifier roleIdentifier;
 	private final UserStateCache userStateCache;
 
 	@Override
@@ -39,8 +38,8 @@ public class UploadMenuCommandHandler implements CommandHandler {
 			vkApiClient
 					.messages()
 					.sendDeprecated(userActor)
-					.message("Отправьте фото меню и описание")
-					.keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
+					.message("Отправьте фото меню и описание.\n" +
+							"Для отмены напишите cancel")
 					.userId(userActor.getId())
 					.randomId(randomId)
 					.execute();

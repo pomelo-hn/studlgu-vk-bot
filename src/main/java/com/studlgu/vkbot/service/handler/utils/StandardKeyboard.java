@@ -52,6 +52,14 @@ public class StandardKeyboard {
                                         .setPayload("{\"command\": \"get_menu\"}")
                                         .setType(KeyboardButtonActionTextType.TEXT)));
 
+        keyboardButton.add(
+                new KeyboardButton()
+                        .setAction(
+                                new KeyboardButtonActionText()
+                                        .setLabel("\uD83D\uDCE8 Обращение для ПрофСовета")
+                                        .setPayload("{\"command\": \"appeal\"}")
+                                        .setType(KeyboardButtonActionTextType.TEXT)));
+
         addEditorButtons(keyboardButton, isUserHasEditorRights);
 
         keyboardButtonList.add(keyboardButton);
