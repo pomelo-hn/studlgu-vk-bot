@@ -55,6 +55,12 @@ public class EventService {
     }
 
     public boolean deleteEventByPrefix(String idPrefix) {
+        LocalDate today = LocalDate.now();
+        boolean isDeletable = repository.findAll().stream()
+                .anyMatch(e -> e.getId() != null
+                        && e.getId().startsWith(idPrefix)
+                        && !e.getDate().isBefore(today));
+        if (!isDeletable) return false;
         return repository.deleteByIdPrefix(idPrefix);
     }
 
@@ -65,9 +71,12 @@ public class EventService {
                 .toList();
     }
 
-    public List<Event> listAll() {
+    public List<Event> listDeletable() {
+        LocalDate today = LocalDate.now();
         return repository.findAll().stream()
+                .filter(e -> !e.getDate().isBefore(today))
                 .sorted(Comparator.comparing(Event::getDate).thenComparing(Event::getTime))
                 .toList();
     }
+
 }

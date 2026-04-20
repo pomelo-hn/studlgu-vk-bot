@@ -39,11 +39,11 @@ public class DeleteEventCommandHandler implements CommandHandler {
     public void handle(CallbackRequest request) {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
         try {
-            List<Event> events = eventService.listAll();
+            List<Event> events = eventService.listDeletable();
 
             if (events.isEmpty()) {
                 vkApiClient.messages().sendDeprecated(userActor)
-                        .message("Нет событий для удаления.")
+                        .message("Нет доступных для удаления событий (прошедшие события удалить нельзя).")
                         .userId(userActor.getId())
                         .randomId(Math.abs(new Random().nextInt(10000)))
                         .execute();
