@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_mempalace_mempalace__mempalace_diary_write",
+      "mcp__plugin_mempalace_mempalace__mempalace_add_drawer",
+      "mcp__plugin_mempalace_mempalace__mempalace_kg_add",
+      "Bash(JAVA_HOME=\"C:/Users/iSimpleLab/.jdks/corretto-21.0.6\" ./gradlew test)",
+      "Bash(JAVA_HOME=\"C:/Users/iSimpleLab/.jdks/corretto-21.0.6\" ./gradlew test --tests \"com.studlgu.vkbot.service.handler.utils.UserStateCacheTest\")"
+    ]
+  }
+}
