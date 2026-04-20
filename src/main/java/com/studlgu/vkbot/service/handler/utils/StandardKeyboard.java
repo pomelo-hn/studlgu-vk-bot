@@ -16,7 +16,7 @@ public class StandardKeyboard {
         return createkeyboard(false);
     }
 
-    public static Keyboard createkeyboard(Boolean isUserHasEditorRights) {
+    public static Keyboard createkeyboard(Boolean isUserHasEditorRights) { //TODO: докинуть разные уровни, чтобы было не в одну строчку
         List<List<KeyboardButton>> keyboardButtonList = new ArrayList<>();
 
         List<KeyboardButton> keyboardButton = new ArrayList<>();

@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.callback.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.callback.ICallbackHandler;
 import com.studlgu.vkbot.service.handler.utils.PhotoStorage;
+import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
@@ -26,6 +27,7 @@ public class UploadPhotoHandler implements ICallbackHandler {
     private final VkActorFactory actorFactory;
     private final UserStateCache userStateCache;
     private final PhotoStorage photoStorage;
+	private final RoleIdentifier roleIdentifier;
 	private final RestClient restClient = RestClient.create();
 
     @Override
@@ -48,7 +50,7 @@ public class UploadPhotoHandler implements ICallbackHandler {
 			photoStorage.savePhotos(photoList);
 
 			userStateCache.clearWaitingPhoto(userActor.getId());
-		    sendSuccesMessage(userActor);
+		    sendSuccessMessage(userActor);
 
 		    return "ok";
 	    } catch (ApiException e) {
@@ -71,19 +73,19 @@ public class UploadPhotoHandler implements ICallbackHandler {
         vkApiClient
                 .messages()
                 .sendDeprecated(userActor)
-                .message("Не удалось отправить фото!")
-                .keyboard(StandardKeyboard.createkeyboard())
+                .message("Не удалось загрузить фото!")
+                .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                 .userId(userActor.getId())
                 .randomId(Math.abs(new Random().nextInt(10000)))
                 .execute();
     }
 
-	private void sendSuccesMessage(UserActor userActor) throws ApiException, ClientException {
+	private void sendSuccessMessage(UserActor userActor) throws ApiException, ClientException {
 		vkApiClient
 				.messages()
 				.sendDeprecated(userActor)
 				.message("Фото успешно прикреплено!")
-				.keyboard(StandardKeyboard.createkeyboard())
+				.keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
 				.userId(userActor.getId())
 				.randomId(Math.abs(new Random().nextInt(10000)))
 				.execute();
