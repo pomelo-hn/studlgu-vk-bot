@@ -5,13 +5,13 @@ import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
+import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -23,7 +23,7 @@ public class UploadMenuCommandHandler implements CommandHandler {
 	private final VkApiClient vkApiClient;
 	private final VkActorFactory actorFactory;
 	private final RoleIdentifier roleIdentifier;
-	private final StringRedisTemplate redis;
+	private final UserStateCache userStateCache;
 
 	@Override
 	public CommandType getType() {
@@ -45,7 +45,7 @@ public class UploadMenuCommandHandler implements CommandHandler {
 					.randomId(randomId)
 					.execute();
 
-			redis.opsForValue().set("waiting:photo:from:user:" + userActor.getId(), "true");
+			userStateCache.setWaitingPhoto(userActor.getId());
 		} catch (ApiException | ClientException e) {
 			throw new RuntimeException(e);
 		}

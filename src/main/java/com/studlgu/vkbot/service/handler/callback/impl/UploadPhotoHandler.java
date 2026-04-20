@@ -4,13 +4,13 @@ import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.callback.ICallbackHandler;
 import com.studlgu.vkbot.service.handler.utils.PhotoStorage;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
+import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -24,7 +24,7 @@ public class UploadPhotoHandler implements ICallbackHandler {
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
-    private final StringRedisTemplate redis;
+    private final UserStateCache userStateCache;
     private final PhotoStorage photoStorage;
 	private final RestClient restClient = RestClient.create();
 
@@ -32,11 +32,11 @@ public class UploadPhotoHandler implements ICallbackHandler {
     public String handle(CallbackRequest request) {
 	    try {
 		    UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
-		    boolean isServerWaitingPhoto = Boolean.parseBoolean(redis.opsForValue()
-				    .get("waiting:photo:from:user:" + userActor.getId()));
+		    boolean isServerWaitingPhoto = userStateCache.isWaitingPhoto(userActor.getId());
 
 		    if (!isServerWaitingPhoto) {
                 sendDeclineMessage(userActor);
+                return "ok";
             }
 
 		    List<byte[]> photoList = request.getObject().getMessage().getAttachments()
@@ -47,7 +47,7 @@ public class UploadPhotoHandler implements ICallbackHandler {
 
 			photoStorage.savePhotos(photoList);
 
-			redis.delete("waiting:photo:from:user:" + userActor.getId());
+			userStateCache.clearWaitingPhoto(userActor.getId());
 		    sendSuccesMessage(userActor);
 
 		    return "ok";
