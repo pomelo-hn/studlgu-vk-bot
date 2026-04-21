@@ -10,4 +10,6 @@ import tools.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Payload {
     private String command;
+    private Integer month;
+    private String date;
 }

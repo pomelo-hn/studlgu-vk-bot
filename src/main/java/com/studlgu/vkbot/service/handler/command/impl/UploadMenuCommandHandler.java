@@ -5,6 +5,7 @@ import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
+import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
 import com.vk.api.sdk.client.VkApiClient;
@@ -45,7 +46,7 @@ public class UploadMenuCommandHandler implements CommandHandler {
 					.randomId(randomId)
 					.execute();
 
-			userStateCache.setWaitingPhoto(userActor.getId());
+			userStateCache.setState(userActor.getId(), UserState.AWAITING_PHOTO);
 		} catch (ApiException | ClientException e) {
 			throw new RuntimeException(e);
 		}

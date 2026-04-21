@@ -20,10 +20,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Tech Stack
 
-- Java 21, Spring Boot 4.0.3, Gradle
+- Java 21, Spring Boot 4.0.3, Gradle (`spring-boot-starter-webmvc`, не reactive)
 - VK Java SDK 1.0.16 для работы с VK API
 - Lombok для генерации boilerplate
-- `UserStateCache` использует in-memory `ConcurrentHashMap`
+- `UserStateCache` использует in-memory `ConcurrentHashMap` (Redis сконфигурирован в `application.properties`, но не используется)
 
 ## Architecture
 
@@ -47,7 +47,7 @@ CallbackController → CallbackService → ICallbackHandler → CommandHandlerSe
 | `confirmationHandler` | `confirmation` | Возвращает код подтверждения VK вебхука |
 | `messageNewHandler` | `message_new` | Читает команду из `mappedPayload.command`, делегирует в `CommandHandlerService` |
 | `messageEventHandler` | `message_event` | **TODO: deprecated** — читает команду из `object.payload.command` |
-| `messageReplyHandler` | `message_reply` | Обработчик ответов на сообщения |
+| `messageReplyHandler` | `message_reply` | Заглушка, всегда возвращает `"ok"` |
 | `uploadPhotoHandler` | `upload_photo` | Сохраняет фото меню (только если пользователь в состоянии ожидания) |
 
 ### Команды (`CommandHandler`)
@@ -62,6 +62,10 @@ CallbackController → CallbackService → ICallbackHandler → CommandHandlerSe
 | `WHICH_WEEK` | Верхняя/нижняя неделя (от `vkbot.week-start-date`) |
 | `GET_MENU` | Загружает фото из `PhotoStorage` в VK и отправляет пользователю |
 | `UPLOAD_MENU` | Устанавливает состояние ожидания фото в `UserStateCache`, после чего бот ждёт фото от пользователя |
+
+### Конфигурация
+
+- **`VkConfig`** — создаёт `VkApiClient` с HTTP-транспортом, устанавливает хост `api.vk.ru`.
 
 ### Утилиты
 
