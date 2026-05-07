@@ -29,7 +29,7 @@ public class DeleteEventInputHandler implements ICallbackHandler {
     @Override
     public String handle(CallbackRequest request) {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
-        String idPrefix = request.getObject().getMessage().getText().trim();
+        String idPrefix = resolveId(request);
         try {
             boolean deleted = eventService.deleteEventByPrefix(idPrefix);
             userStateCache.clearState(userActor.getId());
@@ -46,5 +46,15 @@ public class DeleteEventInputHandler implements ICallbackHandler {
             throw new RuntimeException(e);
         }
         return "ok";
+    }
+
+    private String resolveId(CallbackRequest request) {
+        String eventId = request.getObject().getMessage().getMappedPayload() == null
+                ? null
+                : request.getObject().getMessage().getMappedPayload().getEventId();
+        if (eventId != null && !eventId.isBlank()) {
+            return eventId.trim();
+        }
+        return request.getObject().getMessage().getText().trim();
     }
 }

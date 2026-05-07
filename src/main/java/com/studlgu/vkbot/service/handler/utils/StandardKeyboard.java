@@ -69,6 +69,26 @@ public class StandardKeyboard {
                 .setInline(false);
     }
 
+    public static Keyboard createDeleteEventKeyboard(List<String> eventIds) {
+        List<List<KeyboardButton>> rows = new ArrayList<>();
+        List<KeyboardButton> currentRow = new ArrayList<>();
+        for (String eventId : eventIds) {
+            currentRow.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
+                    .setLabel("ID: " + eventId.substring(0, 8))
+                    .setPayload("{\"command\": \"delete_event_by_id\", \"event_id\": \"" + eventId + "\"}")
+                    .setType(KeyboardButtonActionTextType.TEXT)));
+            if (currentRow.size() == 2) {
+                rows.add(new ArrayList<>(currentRow));
+                currentRow.clear();
+            }
+        }
+        if (!currentRow.isEmpty()) {
+            rows.add(currentRow);
+        }
+        rows.add(List.of(btn("❌ Отмена", "cancel")));
+        return new Keyboard().setButtons(rows).setInline(false);
+    }
+
     public static Keyboard createEventDayKeyboard(List<LocalDate> dates) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMM", Locale.of("ru"));
         List<List<KeyboardButton>> rows = new ArrayList<>();

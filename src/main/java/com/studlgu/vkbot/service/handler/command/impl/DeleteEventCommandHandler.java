@@ -5,6 +5,7 @@ import com.studlgu.vkbot.model.Event;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
 import com.studlgu.vkbot.service.handler.utils.EventService;
+import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
@@ -62,6 +63,9 @@ public class DeleteEventCommandHandler implements CommandHandler {
 
             vkApiClient.messages().sendDeprecated(userActor)
                     .message(sb.toString())
+                    .keyboard(StandardKeyboard.createDeleteEventKeyboard(events.stream()
+                            .map(Event::getId)
+                            .toList()))
                     .userId(userActor.getId())
                     .randomId(Math.abs(new Random().nextInt(10000)))
                     .execute();

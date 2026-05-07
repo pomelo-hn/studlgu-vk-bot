@@ -12,4 +12,5 @@ public class Payload {
     private String command;
     private Integer month;
     private String date;
+    private String eventId;
 }
