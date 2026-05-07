@@ -3,6 +3,7 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.EventDraftCache;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
@@ -24,6 +25,7 @@ public class CancelCommandHandler implements CommandHandler {
     private final VkActorFactory actorFactory;
     private final RoleIdentifier roleIdentifier;
     private final UserStateCache userStateCache;
+    private final EventDraftCache eventDraftCache;
 
     @Override
     public CommandType getType() {
@@ -34,6 +36,7 @@ public class CancelCommandHandler implements CommandHandler {
     public void handle(CallbackRequest request) {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
         userStateCache.clearState(userActor.getId());
+        eventDraftCache.clearDraft(userActor.getId());
 
         try {
             vkApiClient

@@ -52,10 +52,24 @@ public class CallbackService {
                     .orElse(null);
 
             if (userId != null) {
+                String command = Optional.ofNullable(request.getObject())
+                        .map(CallbackObject::getMessage)
+                        .map(CallbackMessage::getMappedPayload)
+                        .map(payload -> payload.getCommand())
+                        .orElse(null);
+                if ("cancel".equalsIgnoreCase(command)) {
+                    return request.getType();
+                }
+
                 Optional<UserState> state = userStateCache.getState(userId);
                 if (state.isPresent()) {
                     return switch (state.get()) {
-                        case AWAITING_ADD_EVENT -> "add_event_input";
+                        case AWAITING_ADD_EVENT,
+                             AWAITING_EVENT_TITLE,
+                             AWAITING_EVENT_DATE,
+                             AWAITING_EVENT_TIME,
+                             AWAITING_EVENT_DESCRIPTION,
+                             AWAITING_EVENT_LOCATION -> "add_event_input";
                         case AWAITING_DELETE_ID -> "delete_event_input";
                         default -> request.getType();
                     };

@@ -3,6 +3,8 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.EventDraftCache;
+import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
@@ -22,6 +24,7 @@ public class AddEventCommandHandler implements CommandHandler {
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
     private final UserStateCache userStateCache;
+    private final EventDraftCache eventDraftCache;
 
     @Override
     public CommandType getType() {
@@ -32,14 +35,13 @@ public class AddEventCommandHandler implements CommandHandler {
     public void handle(CallbackRequest request) {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
         try {
-            userStateCache.setState(userActor.getId(), UserState.AWAITING_ADD_EVENT);
+            eventDraftCache.createDraft(userActor.getId());
+            userStateCache.setState(userActor.getId(), UserState.AWAITING_EVENT_TITLE);
             vkApiClient.messages().sendDeprecated(userActor)
                     .message("""
-                             Отправь событие в формате:
-                             название|YYYY-MM-DD|HH:mm|описание|место
-
-                             Пример:
-                             Экзамен по математике|2026-05-15|09:00|Билеты 1-40|Корпус А, ауд. 301""")
+                            Отправь название события.
+                            Например: Экзамен по математике""")
+                    .keyboard(StandardKeyboard.createCancelKeyboard())
                     .userId(userActor.getId())
                     .randomId(Math.abs(new Random().nextInt(10000)))
                     .execute();

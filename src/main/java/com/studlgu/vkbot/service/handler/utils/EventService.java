@@ -16,20 +16,42 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository repository;
+    private static final Comparator<Event> BY_DATE_AND_OPTIONAL_TIME =
+            Comparator.comparing(Event::getDate)
+                    .thenComparing(Event::getTime, Comparator.nullsLast(Comparator.naturalOrder()));
 
     public List<Event> getEventsForWeek(LocalDate from) {
         LocalDate end = from.plusDays(7);
         return repository.findAll().stream()
                 .filter(e -> !e.getDate().isBefore(from) && e.getDate().isBefore(end))
-                .sorted(Comparator.comparing(Event::getDate).thenComparing(Event::getTime))
+                .sorted(BY_DATE_AND_OPTIONAL_TIME)
                 .toList();
     }
 
     public List<Event> getEventsForMonth(YearMonth month) {
         return repository.findAll().stream()
                 .filter(e -> YearMonth.from(e.getDate()).equals(month))
-                .sorted(Comparator.comparing(Event::getDate).thenComparing(Event::getTime))
+                .sorted(BY_DATE_AND_OPTIONAL_TIME)
                 .toList();
+    }
+
+    public void addEvent(String title, LocalDate date, LocalTime time, String description, String location) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Название события обязательно");
+        }
+        if (date == null) {
+            throw new IllegalArgumentException("Дата события обязательна");
+        }
+
+        Event event = new Event(
+                null,
+                title.trim(),
+                date,
+                time,
+                blankToNull(description),
+                blankToNull(location)
+        );
+        repository.save(event);
     }
 
     public void addEvent(String rawInput) {
@@ -44,8 +66,8 @@ public class EventService {
                     parts[0].trim(),
                     LocalDate.parse(parts[1].trim()),
                     LocalTime.parse(parts[2].trim()),
-                    parts[3].trim(),
-                    parts[4].trim()
+                    blankToNull(parts[3]),
+                    blankToNull(parts[4])
             );
             repository.save(event);
         } catch (DateTimeParseException e) {
@@ -67,7 +89,7 @@ public class EventService {
     public List<Event> getEventsForDate(LocalDate date) {
         return repository.findAll().stream()
                 .filter(e -> e.getDate().equals(date))
-                .sorted(Comparator.comparing(Event::getTime))
+                .sorted(BY_DATE_AND_OPTIONAL_TIME)
                 .toList();
     }
 
@@ -75,8 +97,15 @@ public class EventService {
         LocalDate today = LocalDate.now();
         return repository.findAll().stream()
                 .filter(e -> !e.getDate().isBefore(today))
-                .sorted(Comparator.comparing(Event::getDate).thenComparing(Event::getTime))
+                .sorted(BY_DATE_AND_OPTIONAL_TIME)
                 .toList();
+    }
+
+    private String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 
 }

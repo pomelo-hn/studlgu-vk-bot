@@ -58,7 +58,9 @@ public class EventDayDetailCommandHandler implements CommandHandler {
                 for (int i = 0; i < events.size(); i++) {
                     Event e = events.get(i);
                     sb.append(i + 1).append(". ").append(e.getTitle()).append("\n");
-                    sb.append("   ⏰ ").append(e.getTime().format(TIME_FMT)).append("\n");
+                    if (e.getTime() != null) {
+                        sb.append("   ⏰ ").append(e.getTime().format(TIME_FMT)).append("\n");
+                    }
                     if (e.getDescription() != null && !e.getDescription().isBlank()) {
                         sb.append("   \uD83D\uDCDD ").append(e.getDescription()).append("\n");
                     }

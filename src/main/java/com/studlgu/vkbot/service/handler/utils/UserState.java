@@ -3,5 +3,10 @@ package com.studlgu.vkbot.service.handler.utils;
 public enum UserState {
     AWAITING_PHOTO,
     AWAITING_ADD_EVENT,
+    AWAITING_EVENT_TITLE,
+    AWAITING_EVENT_DATE,
+    AWAITING_EVENT_TIME,
+    AWAITING_EVENT_DESCRIPTION,
+    AWAITING_EVENT_LOCATION,
     AWAITING_DELETE_ID
 }

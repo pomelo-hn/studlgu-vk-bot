@@ -60,6 +60,15 @@ public class StandardKeyboard {
                 .setInline(false);
     }
 
+    public static Keyboard createOptionalEventStepKeyboard() {
+        return new Keyboard()
+                .setButtons(List.of(List.of(
+                        btn("Пропустить", "skip"),
+                        btn("❌ Отмена", "cancel")
+                )))
+                .setInline(false);
+    }
+
     public static Keyboard createEventDayKeyboard(List<LocalDate> dates) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMM", Locale.of("ru"));
         List<List<KeyboardButton>> rows = new ArrayList<>();

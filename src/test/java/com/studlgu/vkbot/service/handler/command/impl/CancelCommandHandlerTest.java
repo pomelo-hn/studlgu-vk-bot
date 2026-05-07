@@ -4,6 +4,7 @@ import com.studlgu.vkbot.model.CallbackMessage;
 import com.studlgu.vkbot.model.CallbackObject;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandType;
+import com.studlgu.vkbot.service.handler.utils.EventDraftCache;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
@@ -34,7 +35,8 @@ class CancelCommandHandlerTest {
                 vkApiClient,
                 actorFactory,
                 roleIdentifier,
-                userStateCache
+                userStateCache,
+                new EventDraftCache()
         );
 
         handler.handle(messageRequest(userId));
@@ -48,10 +50,36 @@ class CancelCommandHandlerTest {
                 mock(VkApiClient.class, RETURNS_DEEP_STUBS),
                 mock(VkActorFactory.class),
                 mock(RoleIdentifier.class),
-                new UserStateCache()
+                new UserStateCache(),
+                new EventDraftCache()
         );
 
         assertThat(handler.getType()).isEqualTo(CommandType.CANCEL);
+    }
+
+    @Test
+    void handleClearsCurrentEventDraft() throws Exception {
+        long userId = 123L;
+        VkApiClient vkApiClient = mock(VkApiClient.class, RETURNS_DEEP_STUBS);
+        VkActorFactory actorFactory = mock(VkActorFactory.class);
+        RoleIdentifier roleIdentifier = mock(RoleIdentifier.class);
+        UserStateCache userStateCache = new UserStateCache();
+        EventDraftCache eventDraftCache = new EventDraftCache();
+        UserActor userActor = new UserActor(userId, "token");
+        eventDraftCache.createDraft(userId).setTitle("Экзамен");
+        when(actorFactory.create(userId)).thenReturn(userActor);
+        when(roleIdentifier.hasEditorRights(vkApiClient, userActor)).thenReturn(true);
+        CancelCommandHandler handler = new CancelCommandHandler(
+                vkApiClient,
+                actorFactory,
+                roleIdentifier,
+                userStateCache,
+                eventDraftCache
+        );
+
+        handler.handle(messageRequest(userId));
+
+        assertThat(eventDraftCache.getDraft(userId)).isEmpty();
     }
 
     private CallbackRequest messageRequest(long userId) {
