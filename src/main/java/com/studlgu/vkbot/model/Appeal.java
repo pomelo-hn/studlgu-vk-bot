@@ -17,6 +17,7 @@ public class Appeal {
     private Long userId;
     private String text;
     private List<String> photoUrls;
+    private List<String> photoAttachments;
     private AppealStatus status;
     private Instant createdAt;
     private Instant answeredAt;

@@ -22,21 +22,18 @@ public class StandardKeyboard {
     public static Keyboard createkeyboard(Boolean isUserHasEditorRights) {
         List<List<KeyboardButton>> rows = new ArrayList<>();
 
-        // Строка 1: Мотивашки, Расписание звонков
         rows.add(List.of(
                 btn("✨ Мотивашки", "motivation"),
-                btn("\uD83D\uDD14 Расписание звонков", "bell_schedule")
+                btn("🔔 Расписание звонков", "bell_schedule")
         ));
 
-        // Строка 2: Какая неделя?, Получить меню
         rows.add(List.of(
-                btn("\uD83D\uDCC5 Какая неделя?", "which_week"),
-                btn("\uD83C\uDF7D Получить меню", "get_menu")
+                btn("📅 Какая неделя?", "which_week"),
+                btn("🍽 Получить меню", "get_menu")
         ));
 
-        // Строка 3: Календарь событий
         rows.add(List.of(
-                btn("\uD83D\uDCC5 Календарь событий", "calendar")
+                btn("📅 Календарь событий", "calendar")
         ));
 
         rows.add(List.of(
@@ -44,14 +41,12 @@ public class StandardKeyboard {
         ));
 
         if (!Boolean.FALSE.equals(isUserHasEditorRights)) {
-            // Строка 4 (редакторы): Загрузить меню
             rows.add(List.of(
-                    btn("\uD83D\uDCE5 Загрузить меню", "upload_menu")
+                    btn("📥 Загрузить меню", "upload_menu")
             ));
-            // Строка 5 (редакторы): Добавить / Удалить событие
             rows.add(List.of(
                     btn("➕ Добавить событие", "add_event"),
-                    btn("\uD83D\uDDD1 Удалить событие", "delete_event")
+                    btn("🗑 Удалить событие", "delete_event")
             ));
             rows.add(List.of(
                     btn("Обращения", "appeals")
@@ -112,7 +107,7 @@ public class StandardKeyboard {
         if (!currentRow.isEmpty()) {
             rows.add(currentRow);
         }
-        rows.add(List.of(btn("вќЊ РћС‚РјРµРЅР°", "cancel")));
+        rows.add(List.of(btn("❌ Отмена", "cancel")));
         return new Keyboard().setButtons(rows).setInline(false);
     }
 
@@ -151,18 +146,18 @@ public class StandardKeyboard {
 
         List<KeyboardButton> row1 = new ArrayList<>();
         row1.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
-                .setLabel("\uD83D\uDCC5 Ближайшая неделя")
+                .setLabel("📅 Ближайшая неделя")
                 .setPayload("{\"command\": \"calendar_week\"}")
                 .setType(KeyboardButtonActionTextType.TEXT)));
         row1.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
-                .setLabel("\uD83D\uDCC6 Этот месяц")
+                .setLabel("📆 Этот месяц")
                 .setPayload("{\"command\": \"calendar_month_current\"}")
                 .setType(KeyboardButtonActionTextType.TEXT)));
         rows.add(row1);
 
         List<KeyboardButton> row2 = new ArrayList<>();
         row2.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
-                .setLabel("\uD83D\uDDD3 Выбрать месяц")
+                .setLabel("🗓 Выбрать месяц")
                 .setPayload("{\"command\": \"calendar_month_select\"}")
                 .setType(KeyboardButtonActionTextType.TEXT)));
         rows.add(row2);
@@ -172,9 +167,9 @@ public class StandardKeyboard {
 
     public static Keyboard createMonthSelectKeyboard() {
         String[] months = {
-            "Январь", "Февраль", "Март", "Апрель",
-            "Май", "Июнь", "Июль", "Август",
-            "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+                "Январь", "Февраль", "Март", "Апрель",
+                "Май", "Июнь", "Июль", "Август",
+                "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
         };
 
         List<List<KeyboardButton>> rows = new ArrayList<>();

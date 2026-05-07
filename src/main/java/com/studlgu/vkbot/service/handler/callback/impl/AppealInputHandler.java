@@ -109,9 +109,14 @@ public class AppealInputHandler implements ICallbackHandler {
         return attachments.stream()
                 .filter(attachment -> "photo".equals(attachment.getType()))
                 .map(CallbackAttachment::getPhoto)
-                .filter(photo -> photo != null && photo.getOrigPhoto() != null)
-                .map(photo -> photo.getOrigPhoto().getUrl())
-                .filter(url -> url != null && !url.isBlank())
+                .filter(photo -> photo != null && photo.getOwnerId() != null && photo.getId() != null)
+                .map(photo -> {
+                    String attachment = "photo" + photo.getOwnerId() + "_" + photo.getId();
+                    if (photo.getAccessKey() != null && !photo.getAccessKey().isBlank()) {
+                        attachment += "_" + photo.getAccessKey();
+                    }
+                    return attachment;
+                })
                 .toList();
     }
 

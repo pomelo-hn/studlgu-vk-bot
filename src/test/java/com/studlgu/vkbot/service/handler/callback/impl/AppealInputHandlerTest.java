@@ -50,9 +50,9 @@ class AppealInputHandlerTest {
         TestContext ctx = new TestContext();
         ctx.userStateCache.setState(ctx.userId, UserState.AWAITING_APPEAL_TEXT);
 
-        ctx.handler.handle(messageRequest(ctx.userId, "Need help", List.of(photoAttachment("https://vk/photo.jpg"))));
+        ctx.handler.handle(messageRequest(ctx.userId, "Need help", List.of(photoAttachment(-10L, 20L, "access-key"))));
 
-        verify(ctx.appealService).createAppeal(ctx.userId, "Need help", List.of("https://vk/photo.jpg"));
+        verify(ctx.appealService).createAppeal(ctx.userId, "Need help", List.of("photo-10_20_access-key"));
         assertThat(ctx.userStateCache.getState(ctx.userId)).isEmpty();
     }
 
@@ -110,10 +110,13 @@ class AppealInputHandlerTest {
         return request;
     }
 
-    private static CallbackAttachment photoAttachment(String url) {
+    private static CallbackAttachment photoAttachment(Long ownerId, Long id, String accessKey) {
         CallbackOrigPhoto origPhoto = new CallbackOrigPhoto();
-        origPhoto.setUrl(url);
+        origPhoto.setUrl("https://vk/photo.jpg");
         CallbackPhoto photo = new CallbackPhoto();
+        photo.setOwnerId(ownerId);
+        photo.setId(id);
+        photo.setAccessKey(accessKey);
         photo.setOrigPhoto(origPhoto);
         CallbackAttachment attachment = new CallbackAttachment();
         attachment.setType("photo");

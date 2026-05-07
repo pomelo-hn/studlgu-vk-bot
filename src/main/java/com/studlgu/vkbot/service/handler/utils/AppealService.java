@@ -25,6 +25,7 @@ public class AppealService {
                 null,
                 userId,
                 text.trim(),
+                List.of(),
                 photoUrls == null ? List.of() : List.copyOf(photoUrls),
                 AppealStatus.OPEN,
                 Instant.now(),

@@ -16,16 +16,17 @@ import static org.mockito.Mockito.when;
 class AppealServiceTest {
 
     @Test
-    void createAppealTrimsTextAndSavesOpenAppealWithPhotoUrls() {
+    void createAppealTrimsTextAndSavesOpenAppealWithPhotoAttachments() {
         AppealRepository repository = mock(AppealRepository.class);
         AppealService service = new AppealService(repository);
 
-        Appeal appeal = service.createAppeal(123L, "  Help  ", List.of("https://vk/photo.jpg"));
+        Appeal appeal = service.createAppeal(123L, "  Help  ", List.of("photo-10_20_access-key"));
 
         assertThat(appeal.getStatus()).isEqualTo(AppealStatus.OPEN);
         assertThat(appeal.getUserId()).isEqualTo(123L);
         assertThat(appeal.getText()).isEqualTo("Help");
-        assertThat(appeal.getPhotoUrls()).containsExactly("https://vk/photo.jpg");
+        assertThat(appeal.getPhotoUrls()).isEmpty();
+        assertThat(appeal.getPhotoAttachments()).containsExactly("photo-10_20_access-key");
         assertThat(appeal.getCreatedAt()).isNotNull();
         verify(repository).save(appeal);
     }

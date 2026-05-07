@@ -59,7 +59,8 @@ public class SelectAppealCommandHandler implements CommandHandler {
             appealAnswerDraftCache.setAppealId(userActor.getId(), appeal.getId());
             userStateCache.setState(userActor.getId(), UserState.AWAITING_APPEAL_ANSWER);
             sendMessage(userActor, formatAppeal(appeal) + "\n\nОтправьте текст ответа.",
-                    StandardKeyboard.createCancelKeyboard());
+                    StandardKeyboard.createCancelKeyboard(),
+                    photoAttachments(appeal));
         } catch (ApiException | ClientException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +77,8 @@ public class SelectAppealCommandHandler implements CommandHandler {
                 .append("\n\n")
                 .append(appeal.getText());
 
-        if (appeal.getPhotoUrls() != null && !appeal.getPhotoUrls().isEmpty()) {
+        if ((appeal.getPhotoAttachments() == null || appeal.getPhotoAttachments().isEmpty())
+                && appeal.getPhotoUrls() != null && !appeal.getPhotoUrls().isEmpty()) {
             message.append("\n\nКартинки:");
             for (String photoUrl : appeal.getPhotoUrls()) {
                 message.append("\n").append(photoUrl);
@@ -100,12 +102,21 @@ public class SelectAppealCommandHandler implements CommandHandler {
 
     private void sendMessage(UserActor userActor, String message, Keyboard keyboard)
             throws ApiException, ClientException {
-        vkApiClient.messages().sendDeprecated(userActor)
-                .message(message)
+        sendMessage(userActor, message, keyboard, null);
+    }
+
+    private void sendMessage(UserActor userActor, String message, Keyboard keyboard, String attachment)
+            throws ApiException, ClientException {
+        var sendRequest = vkApiClient.messages().sendDeprecated(userActor)
+                .message(message);
+        if (attachment != null && !attachment.isBlank()) {
+            sendRequest.attachment(attachment);
+        }
+        sendRequest
                 .keyboard(keyboard)
                 .userId(userActor.getId())
-                .randomId(Math.abs(new Random().nextInt(10000)))
-                .execute();
+                .randomId(Math.abs(new Random().nextInt(10000)));
+        sendRequest.execute();
     }
 
     private String shortId(String id) {
@@ -113,5 +124,12 @@ public class SelectAppealCommandHandler implements CommandHandler {
             return "";
         }
         return id.substring(0, Math.min(8, id.length()));
+    }
+
+    private String photoAttachments(Appeal appeal) {
+        if (appeal.getPhotoAttachments() == null || appeal.getPhotoAttachments().isEmpty()) {
+            return null;
+        }
+        return String.join(",", appeal.getPhotoAttachments());
     }
 }

@@ -24,6 +24,14 @@ class StandardKeyboardTest {
     }
 
     @Test
+    void createCancelKeyboardContainsReadableCancelLabel() {
+        Keyboard keyboard = StandardKeyboard.createCancelKeyboard();
+
+        assertThat(labels(keyboard))
+                .contains("❌ Отмена");
+    }
+
+    @Test
     void createDeleteEventKeyboardContainsDeleteEventPayloads() {
         Keyboard keyboard = StandardKeyboard.createDeleteEventKeyboard(List.of(
                 "12345678-aaaa-bbbb-cccc-123456789abc",
@@ -82,6 +90,16 @@ class StandardKeyboardTest {
                 .map(KeyboardButton::getAction)
                 .map(KeyboardButtonActionText.class::cast)
                 .map(KeyboardButtonActionText::getPayload)
+                .toList();
+    }
+
+    private List<String> labels(Keyboard keyboard) {
+        return keyboard.getButtons()
+                .stream()
+                .flatMap(row -> row.stream())
+                .map(KeyboardButton::getAction)
+                .map(KeyboardButtonActionText.class::cast)
+                .map(KeyboardButtonActionText::getLabel)
                 .toList();
     }
 }

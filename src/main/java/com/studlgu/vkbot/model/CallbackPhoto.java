@@ -9,5 +9,8 @@ import tools.jackson.databind.annotation.JsonNaming;
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CallbackPhoto {
+	private Long id;
+	private Long ownerId;
+	private String accessKey;
 	private CallbackOrigPhoto origPhoto;
 }
