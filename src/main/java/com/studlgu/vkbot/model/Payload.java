@@ -13,4 +13,5 @@ public class Payload {
     private Integer month;
     private String date;
     private String eventId;
+    private String appealId;
 }

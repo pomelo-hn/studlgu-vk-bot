@@ -30,21 +30,6 @@ public class CallbackService {
     }
 
     public String defineType(CallbackRequest request) {
-        List<CallbackAttachment> attachments = Optional.ofNullable(request.getObject())
-                .map(CallbackObject::getMessage)
-                .map(CallbackMessage::getAttachments)
-                .orElse(null);
-
-        if (attachments != null && !attachments.isEmpty()) {
-            boolean isAllAttachmentsIsPhoto = attachments
-                    .stream()
-                    .allMatch(attachment -> "photo".equals(attachment.getType()));
-
-            if (isAllAttachmentsIsPhoto) {
-                return "upload_photo";
-            }
-        }
-
         if ("message_new".equals(request.getType())) {
             Long userId = Optional.ofNullable(request.getObject())
                     .map(CallbackObject::getMessage)
@@ -71,9 +56,26 @@ public class CallbackService {
                              AWAITING_EVENT_DESCRIPTION,
                              AWAITING_EVENT_LOCATION -> "add_event_input";
                         case AWAITING_DELETE_ID -> "delete_event_input";
+                        case AWAITING_APPEAL_TEXT,
+                             AWAITING_APPEAL_ANSWER -> "appeal_input";
                         default -> request.getType();
                     };
                 }
+            }
+        }
+
+        List<CallbackAttachment> attachments = Optional.ofNullable(request.getObject())
+                .map(CallbackObject::getMessage)
+                .map(CallbackMessage::getAttachments)
+                .orElse(null);
+
+        if (attachments != null && !attachments.isEmpty()) {
+            boolean isAllAttachmentsIsPhoto = attachments
+                    .stream()
+                    .allMatch(attachment -> "photo".equals(attachment.getType()));
+
+            if (isAllAttachmentsIsPhoto) {
+                return "upload_photo";
             }
         }
 

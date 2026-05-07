@@ -15,5 +15,8 @@ public enum CommandType {
     ADD_EVENT,
     DELETE_EVENT,
     EVENT_DAY_DETAIL,
+    CREATE_APPEAL,
+    APPEALS,
+    SELECT_APPEAL,
     CANCEL
 }

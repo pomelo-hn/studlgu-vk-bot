@@ -14,6 +14,7 @@ public enum CallbackType {
     MESSAGE_REPLY("message_reply", "messageReplyHandler"),
     UPLOAD_PHOTO("upload_photo", "uploadPhotoHandler"),
     ADD_EVENT_INPUT("add_event_input", "addEventInputHandler"),
+    APPEAL_INPUT("appeal_input", "appealInputHandler"),
     DELETE_EVENT_INPUT("delete_event_input", "deleteEventInputHandler");
 
     private final String callbackName;

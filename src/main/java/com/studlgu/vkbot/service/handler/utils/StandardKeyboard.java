@@ -39,6 +39,10 @@ public class StandardKeyboard {
                 btn("\uD83D\uDCC5 Календарь событий", "calendar")
         ));
 
+        rows.add(List.of(
+                btn("Обращение", "create_appeal")
+        ));
+
         if (!Boolean.FALSE.equals(isUserHasEditorRights)) {
             // Строка 4 (редакторы): Загрузить меню
             rows.add(List.of(
@@ -48,6 +52,9 @@ public class StandardKeyboard {
             rows.add(List.of(
                     btn("➕ Добавить событие", "add_event"),
                     btn("\uD83D\uDDD1 Удалить событие", "delete_event")
+            ));
+            rows.add(List.of(
+                    btn("Обращения", "appeals")
             ));
         }
 
@@ -86,6 +93,26 @@ public class StandardKeyboard {
             rows.add(currentRow);
         }
         rows.add(List.of(btn("❌ Отмена", "cancel")));
+        return new Keyboard().setButtons(rows).setInline(false);
+    }
+
+    public static Keyboard createAppealsListKeyboard(List<String> appealIds) {
+        List<List<KeyboardButton>> rows = new ArrayList<>();
+        List<KeyboardButton> currentRow = new ArrayList<>();
+        for (String appealId : appealIds) {
+            currentRow.add(new KeyboardButton().setAction(new KeyboardButtonActionText()
+                    .setLabel("ID: " + appealId.substring(0, Math.min(8, appealId.length())))
+                    .setPayload("{\"command\": \"select_appeal\", \"appeal_id\": \"" + appealId + "\"}")
+                    .setType(KeyboardButtonActionTextType.TEXT)));
+            if (currentRow.size() == 2) {
+                rows.add(new ArrayList<>(currentRow));
+                currentRow.clear();
+            }
+        }
+        if (!currentRow.isEmpty()) {
+            rows.add(currentRow);
+        }
+        rows.add(List.of(btn("вќЊ РћС‚РјРµРЅР°", "cancel")));
         return new Keyboard().setButtons(rows).setInline(false);
     }
 

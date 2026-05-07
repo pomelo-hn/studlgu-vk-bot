@@ -1,7 +1,10 @@
 package com.studlgu.vkbot.service.handler.callback;
 
+import com.studlgu.vkbot.model.CallbackAttachment;
 import com.studlgu.vkbot.model.CallbackMessage;
 import com.studlgu.vkbot.model.CallbackObject;
+import com.studlgu.vkbot.model.CallbackOrigPhoto;
+import com.studlgu.vkbot.model.CallbackPhoto;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.model.Payload;
 import com.studlgu.vkbot.service.handler.utils.UserState;
@@ -10,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.context.ApplicationContext;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -66,6 +71,35 @@ class CallbackServiceTest {
         assertThat(callbackService.defineType(request)).isEqualTo("message_new");
     }
 
+    @ParameterizedTest
+    @EnumSource(value = UserState.class, names = {
+            "AWAITING_APPEAL_TEXT",
+            "AWAITING_APPEAL_ANSWER"
+    })
+    void defineTypeRoutesAppealStatesToAppealInput(UserState state) {
+        UserStateCache userStateCache = new UserStateCache();
+        CallbackService callbackService = new CallbackService(mock(ApplicationContext.class), userStateCache);
+        long userId = 123L;
+        userStateCache.setState(userId, state);
+
+        CallbackRequest request = messageNewRequest(userId, null);
+
+        assertThat(callbackService.defineType(request)).isEqualTo("appeal_input");
+    }
+
+    @Test
+    void defineTypeRoutesPhotoMessageToAppealInputWhenAwaitingAppealText() {
+        UserStateCache userStateCache = new UserStateCache();
+        CallbackService callbackService = new CallbackService(mock(ApplicationContext.class), userStateCache);
+        long userId = 123L;
+        userStateCache.setState(userId, UserState.AWAITING_APPEAL_TEXT);
+
+        CallbackRequest request = messageNewRequest(userId, null);
+        request.getObject().getMessage().setAttachments(List.of(photoAttachment("https://vk/photo.jpg")));
+
+        assertThat(callbackService.defineType(request)).isEqualTo("appeal_input");
+    }
+
     private CallbackRequest messageNewRequest(long userId, String command) {
         CallbackMessage message = new CallbackMessage();
         message.setFromId(userId);
@@ -82,5 +116,16 @@ class CallbackServiceTest {
         request.setType("message_new");
         request.setObject(object);
         return request;
+    }
+
+    private CallbackAttachment photoAttachment(String url) {
+        CallbackOrigPhoto origPhoto = new CallbackOrigPhoto();
+        origPhoto.setUrl(url);
+        CallbackPhoto photo = new CallbackPhoto();
+        photo.setOrigPhoto(origPhoto);
+        CallbackAttachment attachment = new CallbackAttachment();
+        attachment.setType("photo");
+        attachment.setPhoto(photo);
+        return attachment;
     }
 }
