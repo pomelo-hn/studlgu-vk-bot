@@ -50,6 +50,7 @@ public class CallbackService {
                     .map(CallbackObject::getMessage)
                     .map(CallbackMessage::getFromId)
                     .orElse(null);
+
             if (userId != null) {
                 Optional<UserState> state = userStateCache.getState(userId);
                 if (state.isPresent()) {

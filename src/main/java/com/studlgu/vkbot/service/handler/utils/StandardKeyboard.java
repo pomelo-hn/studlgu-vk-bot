@@ -54,6 +54,12 @@ public class StandardKeyboard {
         return new Keyboard().setButtons(rows).setInline(false);
     }
 
+    public static Keyboard createCancelKeyboard() {
+        return new Keyboard()
+                .setButtons(List.of(List.of(btn("❌ Отмена", "cancel"))))
+                .setInline(false);
+    }
+
     public static Keyboard createEventDayKeyboard(List<LocalDate> dates) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d MMM", Locale.of("ru"));
         List<List<KeyboardButton>> rows = new ArrayList<>();

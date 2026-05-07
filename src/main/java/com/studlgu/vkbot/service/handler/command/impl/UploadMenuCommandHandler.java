@@ -3,7 +3,6 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
-import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.UserState;
 import com.studlgu.vkbot.service.handler.utils.UserStateCache;
@@ -23,7 +22,6 @@ public class UploadMenuCommandHandler implements CommandHandler {
 
 	private final VkApiClient vkApiClient;
 	private final VkActorFactory actorFactory;
-	private final RoleIdentifier roleIdentifier;
 	private final UserStateCache userStateCache;
 
 	@Override
@@ -41,7 +39,7 @@ public class UploadMenuCommandHandler implements CommandHandler {
 					.messages()
 					.sendDeprecated(userActor)
 					.message("Отправьте фото меню и описание")
-					.keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
+					.keyboard(StandardKeyboard.createCancelKeyboard())
 					.userId(userActor.getId())
 					.randomId(randomId)
 					.execute();

@@ -13,13 +13,16 @@ import com.vk.api.sdk.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
 public class BellScheduleCommandHandler implements CommandHandler {
+
+    private static final ZoneId MOSCOW_ZONE = ZoneId.of("Europe/Moscow");
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
@@ -35,7 +38,7 @@ public class BellScheduleCommandHandler implements CommandHandler {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
 
         try {
-            LocalDateTime dateTime = LocalDateTime.now();
+            ZonedDateTime dateTime = ZonedDateTime.now(MOSCOW_ZONE);
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
             String date = dateTime.format(dateFormatter);
