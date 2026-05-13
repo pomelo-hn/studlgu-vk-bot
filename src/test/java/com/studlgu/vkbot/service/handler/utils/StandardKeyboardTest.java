@@ -65,7 +65,32 @@ class StandardKeyboardTest {
         assertThat(payloads(userKeyboard))
                 .doesNotContain("{\"command\": \"appeals\"}");
         assertThat(payloads(editorKeyboard))
-                .contains("{\"command\": \"appeals\"}");
+                .contains("{\"command\": \"admin_panel\"}")
+                .doesNotContain(
+                        "{\"command\": \"appeals\"}",
+                        "{\"command\": \"upload_menu\"}",
+                        "{\"command\": \"add_event\"}",
+                        "{\"command\": \"delete_event\"}",
+                        "{\"command\": \"add_motivation\"}"
+                );
+    }
+
+    @Test
+    void createAdminKeyboardContainsAdminCommandsAndMainMenuButton() {
+        Keyboard keyboard = StandardKeyboard.createAdminKeyboard();
+
+        assertThat(payloads(keyboard))
+                .contains(
+                        "{\"command\": \"upload_menu\"}",
+                        "{\"command\": \"add_event\"}",
+                        "{\"command\": \"delete_event\"}",
+                        "{\"command\": \"appeals\"}",
+                        "{\"command\": \"add_motivation\"}",
+                        "{\"command\": \"start\"}"
+                );
+
+        assertThat(labels(keyboard))
+                .contains("⬅️ Обычное меню");
     }
 
     @Test

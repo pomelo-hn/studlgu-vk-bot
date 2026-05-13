@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
+import java.util.StringJoiner;
 
 @Component
 @RequiredArgsConstructor
@@ -48,33 +49,45 @@ public class GetMenuCommandHandler implements CommandHandler {
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
             String date = dateTime.format(dateFormatter);
+            List<File> menuPhotos = photoStorage.getAllPhotos();
 
-            GetMessagesUploadServerResponse messagesUploadServer = vkApiClient
-                    .photos().getMessagesUploadServer(userActor).execute();
+            String message = "\uD83C\uDF5B Меню столовой на " + date;
+            String attachments = "";
+            if (menuPhotos.isEmpty()) {
+                message = "Меню пока не загружено.";
+            } else {
+                GetMessagesUploadServerResponse messagesUploadServer = vkApiClient
+                        .photos().getMessagesUploadServer(userActor).execute();
+                attachments = getMenu(messagesUploadServer, userActor, menuPhotos);
+            }
 
             int randomId = Math.abs(new Random().nextInt(10000));
-            vkApiClient
+            var sendRequest = vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message("\uD83C\uDF5B Меню столовой на " + date)
-                    .attachment(getMenu(messagesUploadServer, userActor))
+                    .message(message)
                     .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
                     .userId(userActor.getId())
-                    .randomId(randomId)
-                    .execute();
+                    .randomId(randomId);
+            if (!attachments.isBlank()) {
+                sendRequest.attachment(attachments);
+            }
+            sendRequest.execute();
         } catch (ApiException | ClientException e) {
             throw new RuntimeException(e);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
-        } catch (IOException e) {
-	        throw new RuntimeException(e);
         }
     }
 
     private String getMenu(GetMessagesUploadServerResponse messagesUploadServer, UserActor userActor) throws ApiException, ClientException, MalformedURLException {
+        return getMenu(messagesUploadServer, userActor, photoStorage.getAllPhotos());
+    }
+
+    private String getMenu(GetMessagesUploadServerResponse messagesUploadServer, UserActor userActor, List<File> menuPhotos)
+            throws ApiException, ClientException, MalformedURLException {
 	    try {
-            List<File> menuPhotos = photoStorage.getAllPhotos();
-            String attachments = "";
+            StringJoiner attachments = new StringJoiner(",");
 
             for (File photo : menuPhotos) {
                 PhotoUploadResponse photoUploadResponse = vkApiClient.upload()
@@ -86,11 +99,10 @@ public class GetMenuCommandHandler implements CommandHandler {
                         .hash(photoUploadResponse.getHash())
                         .execute().getFirst();
 
-                attachments = attachments.concat(
-                        "photo" + saveMessagesPhotoResponse.getOwnerId() + "_" + saveMessagesPhotoResponse.getId() + ",");
+                attachments.add("photo" + saveMessagesPhotoResponse.getOwnerId() + "_" + saveMessagesPhotoResponse.getId());
             }
 
-            return attachments.substring(0, attachments.length() - 1);
+            return attachments.toString();
 	    } catch (IOException e) {
 		    throw new RuntimeException(e);
 	    }

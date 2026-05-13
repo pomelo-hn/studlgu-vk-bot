@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Component
@@ -44,7 +45,14 @@ public class UploadPhotoHandler implements ICallbackHandler {
                 return "ok";
             }
 
-		    List<byte[]> photoList = request.getObject().getMessage().getAttachments()
+            var attachments = Optional.ofNullable(request.getObject().getMessage().getAttachments())
+                    .orElse(List.of());
+            if (attachments.isEmpty() || attachments.stream().anyMatch(attachment -> !"photo".equals(attachment.getType()))) {
+                sendMessage(userActor, "Отправьте хотя бы одно фото меню.", StandardKeyboard.createCancelKeyboard());
+                return "ok";
+            }
+
+		    List<byte[]> photoList = attachments
 				    .stream()
 				    .map(attachment -> attachment.getPhoto().getOrigPhoto().getUrl())
 				    .map(this::getPhoto)
@@ -73,24 +81,24 @@ public class UploadPhotoHandler implements ICallbackHandler {
 	}
 
 	private void sendDeclineMessage(UserActor userActor) throws ApiException, ClientException {
-        vkApiClient
-                .messages()
-                .sendDeprecated(userActor)
-                .message("Не удалось загрузить фото!")
-                .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
-                .userId(userActor.getId())
-                .randomId(Math.abs(new Random().nextInt(10000)))
-                .execute();
+        sendMessage(userActor, "Не удалось загрузить фото!",
+                StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)));
     }
 
 	private void sendSuccessMessage(UserActor userActor) throws ApiException, ClientException {
-		vkApiClient
+        sendMessage(userActor, "Фото успешно прикреплено!",
+                StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)));
+	}
+
+    private void sendMessage(UserActor userActor, String message, com.vk.api.sdk.objects.messages.Keyboard keyboard)
+            throws ApiException, ClientException {
+        vkApiClient
 				.messages()
 				.sendDeprecated(userActor)
-				.message("Фото успешно прикреплено!")
-				.keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
+				.message(message)
+				.keyboard(keyboard)
 				.userId(userActor.getId())
 				.randomId(Math.abs(new Random().nextInt(10000)))
 				.execute();
-	}
+    }
 }

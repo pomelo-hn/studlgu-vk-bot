@@ -42,18 +42,26 @@ public class StandardKeyboard {
 
         if (!Boolean.FALSE.equals(isUserHasEditorRights)) {
             rows.add(List.of(
-                    btn("📥 Загрузить меню", "upload_menu")
-            ));
-            rows.add(List.of(
-                    btn("➕ Добавить событие", "add_event"),
-                    btn("🗑 Удалить событие", "delete_event")
-            ));
-            rows.add(List.of(
-                    btn("Обращения", "appeals")
+                    btn("Админ панель", "admin_panel")
             ));
         }
 
         return new Keyboard().setButtons(rows).setInline(false);
+    }
+
+    public static Keyboard createAdminKeyboard() {
+        return new Keyboard()
+                .setButtons(List.of(
+                        List.of(btn("📥 Загрузить меню", "upload_menu")),
+                        List.of(
+                                btn("➕ Добавить событие", "add_event"),
+                                btn("🗑 Удалить событие", "delete_event")
+                        ),
+                        List.of(btn("Обращения", "appeals")),
+                        List.of(btn("✉️ Добавить мотивашку", "add_motivation")),
+                        List.of(btn("⬅️ Обычное меню", "start"))
+                ))
+                .setInline(false);
     }
 
     public static Keyboard createCancelKeyboard() {

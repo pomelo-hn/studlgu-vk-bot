@@ -7,6 +7,8 @@ public enum CommandType {
     WHICH_WEEK,
     GET_MENU,
     UPLOAD_MENU,
+    ADMIN_PANEL,
+    ADD_MOTIVATION,
     CALENDAR,
     CALENDAR_WEEK,
     CALENDAR_MONTH_CURRENT,

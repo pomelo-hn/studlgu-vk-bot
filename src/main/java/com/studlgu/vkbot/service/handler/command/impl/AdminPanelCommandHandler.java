@@ -3,7 +3,6 @@ package com.studlgu.vkbot.service.handler.command.impl;
 import com.studlgu.vkbot.model.CallbackRequest;
 import com.studlgu.vkbot.service.handler.command.CommandHandler;
 import com.studlgu.vkbot.service.handler.command.CommandType;
-import com.studlgu.vkbot.service.handler.utils.MotivationRepository;
 import com.studlgu.vkbot.service.handler.utils.RoleIdentifier;
 import com.studlgu.vkbot.service.handler.utils.StandardKeyboard;
 import com.studlgu.vkbot.service.handler.utils.VkActorFactory;
@@ -14,21 +13,19 @@ import com.vk.api.sdk.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
-public class MotivationCommandHandler implements CommandHandler {
+public class AdminPanelCommandHandler implements CommandHandler {
 
     private final VkApiClient vkApiClient;
     private final VkActorFactory actorFactory;
     private final RoleIdentifier roleIdentifier;
-    private final MotivationRepository motivationRepository;
 
     @Override
     public CommandType getType() {
-        return CommandType.MOTIVATION;
+        return CommandType.ADMIN_PANEL;
     }
 
     @Override
@@ -36,18 +33,14 @@ public class MotivationCommandHandler implements CommandHandler {
         UserActor userActor = actorFactory.create(request.getObject().getMessage().getFromId());
 
         try {
-            List<String> motivations = motivationRepository.findAll();
-            String motivation = motivations.isEmpty()
-                    ? "Ваша мотивашка"
-                    : motivations.get(Math.abs(new Random().nextInt(motivations.size())));
-            int randomId = Math.abs(new Random().nextInt(10000));
+            boolean isAdmin = roleIdentifier.hasEditorRights(vkApiClient, userActor);
             vkApiClient
                     .messages()
                     .sendDeprecated(userActor)
-                    .message(motivation)
-                    .keyboard(StandardKeyboard.createkeyboard(roleIdentifier.hasEditorRights(vkApiClient, userActor)))
+                    .message(isAdmin ? "Выберите админское действие:" : "У вас нет прав администратора.")
+                    .keyboard(isAdmin ? StandardKeyboard.createAdminKeyboard() : StandardKeyboard.createkeyboard(false))
                     .userId(userActor.getId())
-                    .randomId(randomId)
+                    .randomId(Math.abs(new Random().nextInt(10000)))
                     .execute();
         } catch (ApiException | ClientException e) {
             throw new RuntimeException(e);

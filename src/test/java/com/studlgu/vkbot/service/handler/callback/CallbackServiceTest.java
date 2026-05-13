@@ -100,6 +100,32 @@ class CallbackServiceTest {
         assertThat(callbackService.defineType(request)).isEqualTo("appeal_input");
     }
 
+    @Test
+    void defineTypeRoutesAnyAwaitingPhotoMessageToUploadPhoto() {
+        UserStateCache userStateCache = new UserStateCache();
+        CallbackService callbackService = new CallbackService(mock(ApplicationContext.class), userStateCache);
+        long userId = 123L;
+        userStateCache.setState(userId, UserState.AWAITING_PHOTO);
+
+        CallbackRequest request = messageNewRequest(userId, null);
+        request.getObject().getMessage().setText("описание без фото");
+
+        assertThat(callbackService.defineType(request)).isEqualTo("upload_photo");
+    }
+
+    @Test
+    void defineTypeRoutesMotivationInputStateToMotivationInput() {
+        UserStateCache userStateCache = new UserStateCache();
+        CallbackService callbackService = new CallbackService(mock(ApplicationContext.class), userStateCache);
+        long userId = 123L;
+        userStateCache.setState(userId, UserState.AWAITING_MOTIVATION_TEXT);
+
+        CallbackRequest request = messageNewRequest(userId, null);
+        request.getObject().getMessage().setText("новое письмо");
+
+        assertThat(callbackService.defineType(request)).isEqualTo("motivation_input");
+    }
+
     private CallbackRequest messageNewRequest(long userId, String command) {
         CallbackMessage message = new CallbackMessage();
         message.setFromId(userId);

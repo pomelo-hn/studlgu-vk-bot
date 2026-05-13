@@ -49,6 +49,8 @@ public class CallbackService {
                 Optional<UserState> state = userStateCache.getState(userId);
                 if (state.isPresent()) {
                     return switch (state.get()) {
+                        case AWAITING_PHOTO -> "upload_photo";
+                        case AWAITING_MOTIVATION_TEXT -> "motivation_input";
                         case AWAITING_ADD_EVENT,
                              AWAITING_EVENT_TITLE,
                              AWAITING_EVENT_DATE,
