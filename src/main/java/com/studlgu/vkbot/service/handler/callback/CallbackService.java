@@ -60,7 +60,6 @@ public class CallbackService {
                         case AWAITING_DELETE_ID -> "delete_event_input";
                         case AWAITING_APPEAL_TEXT,
                              AWAITING_APPEAL_ANSWER -> "appeal_input";
-                        case AWAITING_DATA_IMPORT -> "data_import_input";
                         default -> request.getType();
                     };
                 }

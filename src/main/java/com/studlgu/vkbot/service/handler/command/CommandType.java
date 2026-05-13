@@ -20,7 +20,5 @@ public enum CommandType {
     CREATE_APPEAL,
     APPEALS,
     SELECT_APPEAL,
-    EXPORT_DATA,
-    IMPORT_DATA,
     CANCEL
 }
