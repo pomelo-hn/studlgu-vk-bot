@@ -16,6 +16,7 @@ public enum CallbackType {
     ADD_EVENT_INPUT("add_event_input", "addEventInputHandler"),
     MOTIVATION_INPUT("motivation_input", "motivationInputHandler"),
     APPEAL_INPUT("appeal_input", "appealInputHandler"),
+    DATA_IMPORT_INPUT("data_import_input", "dataImportInputHandler"),
     DELETE_EVENT_INPUT("delete_event_input", "deleteEventInputHandler");
 
     private final String callbackName;

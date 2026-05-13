@@ -126,6 +126,19 @@ class CallbackServiceTest {
         assertThat(callbackService.defineType(request)).isEqualTo("motivation_input");
     }
 
+    @Test
+    void defineTypeRoutesDataImportStateToDataImportInput() {
+        UserStateCache userStateCache = new UserStateCache();
+        CallbackService callbackService = new CallbackService(mock(ApplicationContext.class), userStateCache);
+        long userId = 123L;
+        userStateCache.setState(userId, UserState.AWAITING_DATA_IMPORT);
+
+        CallbackRequest request = messageNewRequest(userId, null);
+        request.getObject().getMessage().setText("base64-backup");
+
+        assertThat(callbackService.defineType(request)).isEqualTo("data_import_input");
+    }
+
     private CallbackRequest messageNewRequest(long userId, String command) {
         CallbackMessage message = new CallbackMessage();
         message.setFromId(userId);

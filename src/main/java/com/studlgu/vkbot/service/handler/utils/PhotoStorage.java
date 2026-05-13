@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -73,6 +74,42 @@ public class PhotoStorage {
 		}
 	}
 
+	public List<StoredPhoto> getAllStoredPhotos() throws IOException {
+		lock.readLock().lock();
+		try {
+			File[] files = storageDir.listFiles();
+			List<StoredPhoto> result = new ArrayList<>();
+
+			if (files != null) {
+				for (File file : files) {
+					if (file.isFile()) {
+						result.add(new StoredPhoto(file.getName(), Files.readAllBytes(file.toPath())));
+					}
+				}
+			}
+			result.sort(Comparator.comparing(StoredPhoto::fileName));
+			return result;
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	public void saveNamedPhotos(List<StoredPhoto> photos) throws IOException {
+		lock.writeLock().lock();
+		try {
+			deleteAllFiles();
+
+			for (StoredPhoto photo : photos) {
+				File file = new File(storageDir, safeFileName(photo.fileName()));
+				try (FileOutputStream fos = new FileOutputStream(file)) {
+					fos.write(photo.data());
+				}
+			}
+		} finally {
+			lock.writeLock().unlock();
+		}
+	}
+
 	/**
 	 * Удаляет все файлы из директории
 	 */
@@ -84,4 +121,17 @@ public class PhotoStorage {
 			}
 		}
 	}
+
+	private String safeFileName(String fileName) {
+		if (fileName == null || fileName.isBlank()) {
+			throw new IllegalArgumentException("Photo file name is required");
+		}
+		String normalized = new File(fileName).getName();
+		if (!normalized.equals(fileName) || normalized.contains("..")) {
+			throw new IllegalArgumentException("Unsafe photo file name: " + fileName);
+		}
+		return normalized;
+	}
+
+	public record StoredPhoto(String fileName, byte[] data) {}
 }

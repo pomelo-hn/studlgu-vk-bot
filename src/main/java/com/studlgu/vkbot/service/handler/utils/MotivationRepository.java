@@ -65,6 +65,17 @@ public class MotivationRepository {
         }
     }
 
+    public void saveAll(List<String> motivations) {
+        lock.writeLock().lock();
+        try {
+            objectMapper.writeValue(storageFile, motivations);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save motivations", e);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     private List<String> findAllUnsafe() throws IOException {
         return objectMapper.readValue(storageFile, new TypeReference<>() {});
     }

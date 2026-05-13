@@ -86,6 +86,8 @@ class StandardKeyboardTest {
                         "{\"command\": \"delete_event\"}",
                         "{\"command\": \"appeals\"}",
                         "{\"command\": \"add_motivation\"}",
+                        "{\"command\": \"export_data\"}",
+                        "{\"command\": \"import_data\"}",
                         "{\"command\": \"start\"}"
                 );
 

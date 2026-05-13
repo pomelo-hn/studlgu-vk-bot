@@ -59,6 +59,10 @@ public class StandardKeyboard {
                         ),
                         List.of(btn("Обращения", "appeals")),
                         List.of(btn("✉️ Добавить мотивашку", "add_motivation")),
+                        List.of(
+                                btn("Экспорт данных", "export_data"),
+                                btn("Импорт данных", "import_data")
+                        ),
                         List.of(btn("⬅️ Обычное меню", "start"))
                 ))
                 .setInline(false);

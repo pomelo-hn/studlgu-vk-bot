@@ -83,6 +83,17 @@ public class EventRepository {
         }
     }
 
+    public void saveAll(List<Event> events) {
+        lock.writeLock().lock();
+        try {
+            objectMapper.writeValue(storageFile, events);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save events", e);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     private List<Event> findAllUnsafe() throws IOException {
         return objectMapper.readValue(storageFile, new TypeReference<>() {});
     }
