@@ -28,8 +28,7 @@ public class StandardKeyboard {
         ));
 
         rows.add(List.of(
-                btn("📅 Какая неделя?", "which_week"),
-                btn("🍽 Получить меню", "get_menu")
+                btn("📅 Какая неделя?", "which_week")
         ));
 
         rows.add(List.of(
@@ -52,7 +51,6 @@ public class StandardKeyboard {
     public static Keyboard createAdminKeyboard() {
         return new Keyboard()
                 .setButtons(List.of(
-                        List.of(btn("📥 Загрузить меню", "upload_menu")),
                         List.of(
                                 btn("➕ Добавить событие", "add_event"),
                                 btn("🗑 Удалить событие", "delete_event")
